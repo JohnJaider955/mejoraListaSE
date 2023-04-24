@@ -2,10 +2,8 @@ package co.edu.umanizales.tads.service;
 
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.ListSE;
-import co.edu.umanizales.tads.model.Node;
 import lombok.Data;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @Data
@@ -14,16 +12,29 @@ public class ListSEService {
 
     public ListSEService() {
         kids = new ListSE();
-        kids.add(new Kid("123","Carlos",(byte)4));
-        kids.add(new Kid("256","Mariana",(byte)3));
-        kids.add(new Kid("789","Daniel",(byte)5));
+    }
 
-        kids.addToStart(new Kid("967","Estefania",(byte)6));
-        kids.passByPosition(new Kid("314", "José", (byte)7));
-
+    public void KidsDataService() {
+        kids = new ListSE();
     }
 
      //public Node getKids() { return kids.getHead();}
+    /*
+    public Node getKids()
+     */
+
     public void deleteByAge(byte age) { kids.getHead().getData().getAge(); }
+
+    public void invert(){
+        kids.invert();
+    }
+
+    public void addToStart(Kid kid){
+        kids.addToStart(kid);
+    }
+
+    public void addToFinal(Kid kid){
+        kids.addToFinal(kid);
+    }
 
 }
