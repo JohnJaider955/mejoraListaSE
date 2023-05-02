@@ -2,10 +2,8 @@ package co.edu.umanizales.tads.service;
 
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.ListSE;
-import co.edu.umanizales.tads.model.Node;
 import lombok.Data;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Service
 @Data
@@ -14,7 +12,10 @@ public class ListSEService {
 
     public ListSEService() {
         kids = new ListSE();
+    }
 
+    public void KidsDataService() {
+        kids = new ListSE();
     }
 
      //public Node getKids() { return kids.getHead();}
@@ -28,7 +29,12 @@ public class ListSEService {
         kids.invert();
     }
 
-    /*
-    
-     */
+    public void addToStart(Kid kid){
+        kids.addToStart(kid);
+    }
+
+    public void addToFinal(Kid kid){
+        kids.addToFinal(kid);
+    }
+
 }
