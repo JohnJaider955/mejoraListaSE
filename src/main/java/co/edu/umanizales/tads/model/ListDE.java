@@ -1,6 +1,7 @@
 package co.edu.umanizales.tads.model;
 
 
+import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
 import lombok.Data;
 
 @Data
@@ -154,5 +155,71 @@ public class ListDE {
         return count;
     }
 
+    public void deleteByPetCode (String petCodeDE){
+        NodeDE temp = head;
+        NodeDE prev = null;
+
+        while (temp.getNextDE() != null && temp.getDataDE().getCodePet() == petCodeDE) {
+            prev = temp;
+            temp = temp.getNextDE();
+        }
+
+        if(temp != null){
+            if (prev == null){
+                head = temp.getNextDE();
+                if (head != null){
+                    head.setPrevious(null);
+                }
+            }else {
+                prev.setNextDE(temp.getNextDE());
+                if (temp.getNextDE() != null){
+                    temp.getNextDE().setPrevious(prev);
+                }
+            }
+            size--;
+        }
+    }
+
+    public void passByPosition(String codePet, int positions){
+        if (head != null){
+            if(positions<size){
+                if(head.getDataDE().getCodePet()==codePet){
+
+                }
+                else{
+                    int count = 1;
+                    NodeDE temp = head;
+                    while(temp.getNextDE().getDataDE().getCodePet()!=codePet){
+                        temp = temp.getNextDE();
+                        count++;
+                        if(temp.getNextDE()!=null){
+                            return;
+                        }
+                    }
+                    NodeDE temp2=new NodeDE(temp.getNextDE().getDataDE());
+                    temp2.setPrevious(temp);
+                    temp.setNextDE(temp2);
+                    if(positions >= count+1){
+                        addPetsToStart(temp2.getDataDE());
+                    }
+                }
+            }
+        }
+    }
+
+    public void getReportPetsByVetGendersByAge(int age, ReportPetsDTO report){
+        if (head!=null){
+            NodeDE temp = this.head;
+            while (temp != null){
+                if(temp.getDataDE().getAgePet()>age){
+                    report.updateQuantityPets(temp.getDataDE().getLocationPets().getName(),
+                            temp.getDataDE().getGenderPet());
+                }
+                temp = temp.getNextDE();
+            }
+        }
+    }
 }
+
+
 

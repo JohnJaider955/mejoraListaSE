@@ -1,7 +1,11 @@
 package co.edu.umanizales.tads.model;
 
 import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
+
+import co.edu.umanizales.tads.exception.ListSEException;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class ListSE {
@@ -25,20 +29,28 @@ public class ListSE {
     no
         metemos el niño en el costal y ese costal es la cabeza
      */
-    public void add(Kid kid) {
-        if (head != null) {
+    public void add(Kid kid) throws ListSEException {
+        if(head != null){
             Node temp = head;
-            while (temp.getNext() != null) {
+            while(temp.getNext() !=null)
+            {
+                if(temp.getData().getIdentification().equals(kid.getIdentification())){
+                    throw new ListSEException("Ya existe un niño");
+                }
                 temp = temp.getNext();
+
+            }
+            if(temp.getData().getIdentification().equals(kid.getIdentification())){
+                throw new ListSEException("Ya existe un niño");
             }
             /// Parado en el último
             Node newNode = new Node(kid);
             temp.setNext(newNode);
-        } else {
+        }
+        else {
             head = new Node(kid);
         }
-
-        size++;
+        size ++;
     }
 
     /*
@@ -54,7 +66,7 @@ public class ListSE {
 
             que se posicione en la cabeza la copia.
      */
-    public void invert() {
+    public void invert() throws ListSEException{
         if (this.head != null) {
             ListSE listCP = new ListSE();
             Node temp = this.head;
@@ -63,6 +75,9 @@ public class ListSE {
                 temp = temp.getNext();
             }
             this.head = listCP.getHead();
+        }
+        else{
+            throw new ListSEException("La lista está vacía");
         }
     }
 
@@ -79,7 +94,7 @@ public class ListSE {
             que el ayudante tome el siguiente nodo (o se pase al final)
             que se posicione en la cabeza la copia.
      */
-    public void orderBoysToStart() {
+    public void orderBoysToStart() throws Exception {
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
@@ -110,7 +125,7 @@ public class ListSE {
         que se agregue el nodo a la nueva lista
     que se posicione en la cabeza de la lista original a la nueva lista de niños intercalados
      */
-    public void intercalateBoysGirls(){
+    public void intercalateBoysGirls() throws ListSEException {
         ListSE listBoy = new ListSE();
         ListSE listGirl = new ListSE();
         Node temp = this.head;
@@ -154,7 +169,7 @@ public class ListSE {
 
         que se posicione en la cabeza la copia.
      */
-    public void deleteByAge(byte age) {
+    public void deleteByAge(byte age) throws Exception {
         if (this.head != null) {
             ListSE listCP = new ListSE();
             Node temp = this.head;
@@ -165,6 +180,10 @@ public class ListSE {
                 temp = temp.getNext();
             }
             this.head = listCP.getHead();
+        }
+        else
+        {
+            throw  new ListSEException("No hay datos en la lista");
         }
     }
 
@@ -234,7 +253,7 @@ public class ListSE {
         que realice el paso similar al primer bucle, pero esta vez agrega todos los nodos que comienzan con la letra initial al final de la lista copia
     que se posicione en la cabeza la copia
      */
-    public void boysByLetter(char initial){
+    public void boysByLetter(char initial) throws ListSEException {
 
         ListSE listCP = new ListSE();
         Node temp = this.head;
@@ -255,10 +274,11 @@ public class ListSE {
         this.head = listCP.getHead();
     }
 
+
     /*
     -Ejercicio 7: Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
      */
-    public void passByPosition(String identification, int positions){
+    public void passByPosition(String identification, int positions) throws Exception {
         if (head != null){
             if(positions<size){
                 if(head.getData().getIdentification()==identification){
@@ -274,13 +294,42 @@ public class ListSE {
                             return;
                         }
                     }
-                    Node temp2=new Node(temp.getNext().getData());
+                    Node temp2 =new Node(temp.getNext().getData());
                     temp.setNext(temp.getNext().getNext());
                     if(positions >= count+1){
                         addToStart(temp2.getData());
                     }
+                    else{
+                        addByPosition((count+1) - positions, temp2.getData());
+                    }
                 }
             }
+        }
+    }
+
+    public void addByPosition(int position, Kid kid) throws ListSEException {
+        if (head!=null) {
+            if (position == 1) {
+                addToStart(kid);
+            } else {
+                Node temp = head;
+                int cont =1;
+                while (temp != null && cont<position-1)
+                {
+                    temp = temp.getNext();
+                    cont++;
+                }
+                if (temp != null) {
+                    Node newNode = new Node(kid);
+                    newNode.setNext(temp.getNext());
+                    temp.setNext(newNode);
+
+                } else {
+                    add(kid);
+                }
+            }
+        }else{
+            add(kid);
         }
     }
 
@@ -294,7 +343,7 @@ public class ListSE {
             que se reemplace la cabeza con el objeto de datos del último nodo (el primero niño ahora es último)
             que se reemplace el último nodo (el último ahora es el primero)
      */
-    public void changesExtremes() {
+    public void changesExtremes() throws ListSEException{
         if (this.head != null && this.head.getNext() != null) {
             Node temp = this.head;
             while (temp.getNext() != null) {
@@ -304,6 +353,10 @@ public class ListSE {
             Kid copy = this.head.getData();
             this.head.setData(temp.getData());
             temp.setData(copy);
+        }
+        else
+        {
+            throw  new ListSEException("No es posible cambiar de extremos.");
         }
     }
 
@@ -316,13 +369,16 @@ public class ListSE {
     no
         meto el niño en un costal y lo asigno a la cabeza
      */
-    public void addToStart(Kid kid) {
+    public void addToStart(Kid kid) throws ListSEException {
         if (head != null) {
             Node newNode = new Node(kid);
             newNode.setNext(head);
             head = newNode;
-        } else {
+        } else if(this.head == null) {
             head = new Node(kid);
+        }
+        else{
+            throw new ListSEException("La lista está vacía");
         }
         size++;
     }

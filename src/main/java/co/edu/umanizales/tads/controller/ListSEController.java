@@ -1,6 +1,7 @@
 package co.edu.umanizales.tads.controller;
 
 import co.edu.umanizales.tads.controller.dto.*;
+import co.edu.umanizales.tads.exception.ListSEException;
 import co.edu.umanizales.tads.model.Kid;
 import co.edu.umanizales.tads.model.Location;
 import co.edu.umanizales.tads.model.RangeAgeKids;
@@ -34,15 +35,15 @@ public class ListSEController {
 
     //Invertir lista
     @GetMapping("/invert")
-    public ResponseEntity<ResponseDTO> invert() {
+    public ResponseEntity<ResponseDTO> invert() throws Exception {
         listSEService.invert();
         return new ResponseEntity<>(new ResponseDTO(
-                200, "SE ha invertido la lista",
+                200, "Se ha invertido la lista",
                 null), HttpStatus.OK);
     }
 
     @GetMapping("/addtostart")
-    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) {
+    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) throws Exception{
         listSEService.addToStart(kid);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha añadido al inicio.",
@@ -51,7 +52,7 @@ public class ListSEController {
 
     //Niños al inicio y niñas al final
     @GetMapping("/orderboystostart")
-    public ResponseEntity<ResponseDTO> orderBoysToStart() {
+    public ResponseEntity<ResponseDTO> orderBoysToStart() throws Exception {
         listSEService.getKids().orderBoysToStart();
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se han añadido los niños al inicio, las niñas al final.",
@@ -60,14 +61,14 @@ public class ListSEController {
 
     //Intercalar niño, niña, niño, niña
     @GetMapping(path="/boythengirl")
-    public ResponseEntity<ResponseDTO> boyThenGirl(){
+    public ResponseEntity<ResponseDTO> boyThenGirl() throws ListSEException {
         listSEService.getKids().intercalateBoysGirls();
         return new ResponseEntity<>(new ResponseDTO(200, "Los niños se han intercalado.",
                 null), HttpStatus.OK);
     }
 
     @GetMapping("/addtofinal")
-    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) {
+    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) throws Exception {
         listSEService.addToStart(kid);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha añadido al final",
@@ -75,7 +76,7 @@ public class ListSEController {
     }
 
     @GetMapping(path = "/add")
-    public ResponseEntity<ResponseDTO> add(@RequestBody Kid kid) {
+    public ResponseEntity<ResponseDTO> add(@RequestBody Kid kid) throws ListSEException {
         listSEService.getKids().add(kid);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "El niño ha sido añadido", null), HttpStatus.OK);
@@ -83,7 +84,7 @@ public class ListSEController {
 
     //Dada una edad eliminar a los niños de la edad dada
     @GetMapping(path = "/delete/{age}")
-    public ResponseEntity<ResponseDTO> deleteKidByAge(@PathVariable byte age) {
+    public ResponseEntity<ResponseDTO> deleteKidByAge(@PathVariable byte age) throws Exception {
         listSEService.getKids().deleteByAge(age);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Los niños han sido eliminado.",
@@ -99,7 +100,7 @@ public class ListSEController {
 
     //Implementar un método que me permita enviar al final de la lista a los niños que su nombre inicie con una letra dada
     @GetMapping(path="/sendkidletter/{initial}")
-    public ResponseEntity<ResponseDTO> sendBottomByLetter(@PathVariable char initial){
+    public ResponseEntity<ResponseDTO> sendBottomByLetter(@PathVariable char initial) throws ListSEException {
         listSEService.getKids().boysByLetter(Character.toUpperCase(initial));
         return new ResponseEntity<>(new ResponseDTO(200, "Los niños con esa letra se han enviado al final de la lista.",
                 null), HttpStatus.OK);
@@ -118,13 +119,13 @@ public class ListSEController {
     }
 
     @GetMapping(path="/forwardpositions/{positions}")
-    public ResponseEntity<ResponseDTO> forwardPositions(@PathVariable String identification, int positions){
+    public ResponseEntity<ResponseDTO> forwardPositions(@PathVariable String identification, int positions) throws Exception {
         listSEService.getKids().passByPosition(identification, positions);
         return new ResponseEntity<>(new ResponseDTO(200, "El niño ha adelantado de posición", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/change_extremes")
-    public ResponseEntity<ResponseDTO> changeExtremes() {
+    public ResponseEntity<ResponseDTO> changeExtremes() throws ListSEException {
         listSEService.getKids().changesExtremes();
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
@@ -136,17 +137,17 @@ public class ListSEController {
         if (location == null) {
             return new ResponseEntity<>(new ResponseDTO(
                     404, "La ubicación no existe ", null), HttpStatus.OK);
-        } else if (location != null) {
+        } try {
             listSEService.getKids().add(new Kid(kidDTO.getIdentification(),
                     kidDTO.getName(), kidDTO.getAge(),
                     kidDTO.getGender(), location));
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha añadido", null), HttpStatus.OK);
-        } else {
+        } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     409, "Ya existe un niño con ese código", null
             ), HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/kidsbylocations")

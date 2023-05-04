@@ -25,11 +25,11 @@ public class ListSEService {
 
     public void deleteByAge(byte age) { kids.getHead().getData().getAge(); }
 
-    public void invert(){
+    public void invert() throws Exception {
         kids.invert();
     }
 
-    public void addToStart(Kid kid){
+    public void addToStart(Kid kid) throws Exception {
         kids.addToStart(kid);
     }
 
