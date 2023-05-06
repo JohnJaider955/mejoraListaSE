@@ -11,9 +11,8 @@ import java.util.List;
 public class ListSE {
     private Node head;
     private int size;
-    //private int size;
 
-    /*
+    /**
     Algoritmo de adicionar al final
     Entrada
         un niño
@@ -53,7 +52,7 @@ public class ListSE {
         size ++;
     }
 
-    /*
+    /**
     -Ejercicio número 1: Invertir lista.
     Explicación:
     Si hay datos
@@ -81,7 +80,7 @@ public class ListSE {
         }
     }
 
-    /*
+    /**
     -Ejercicio número 2: Niños al inicio y niñas al final.
     Explicación:
     si hay datos
@@ -94,7 +93,7 @@ public class ListSE {
             que el ayudante tome el siguiente nodo (o se pase al final)
             que se posicione en la cabeza la copia.
      */
-    public void orderBoysToStart() throws Exception {
+    public void orderBoysToStart() throws ListSEException {
         if (this.head != null) {
             ListSE listCp = new ListSE();
             Node temp = this.head;
@@ -109,9 +108,12 @@ public class ListSE {
             }
             this.head = listCp.getHead();
         }
+        else{
+            throw new ListSEException("La lista está vacía");
+        }
     }
 
-    /*
+    /**
     -Ejercicio número 3: Intercalar niño, niña, niño, niña
     Explicación:
     Se crean dos nuevas listas enlazadas para separar los nodos de la lista original según el género
@@ -129,6 +131,11 @@ public class ListSE {
         ListSE listBoy = new ListSE();
         ListSE listGirl = new ListSE();
         Node temp = this.head;
+
+        if (temp == null) {
+            throw new ListSEException("La lista está vacía");
+        }
+
         while (temp != null){
             if(temp.getData().getGender()=='M'){
                 listBoy.add(temp.getData());
@@ -154,40 +161,50 @@ public class ListSE {
         this.head = newListBoysGirls.getHead();
     }
 
-    /*
+    /**
     -Ejercicio número 4: Dada una edad eliminar a los niños de la edad dada
     Explicación:
     Si hay datos
-    si
-        creo una lista copia
-        llamo a un ayudante y le digo que se posicione en la cabeza
-        mientras hayan datos
-            si el valor de edad almacenado en el nodo es menor o igual que la edad del primer
-            nodo de la lista original
-            posiciono la lista copia al inicio junto al ayudante con los datos
-            que el ayudante tome el siguiente nodo (o se pase al final)
-
-        que se posicione en la cabeza la copia.
+        si la identificación del niño almacenado en el primer nodo es igual a la edad que se pasó al método delete
+        Si es así, que actualice el primer nodo para que apunte al siguiente nodo en la lista
+        entonces
+            llamo a un ayudante y que se posicione en la cabeza
+            mientras hayan datos o no sea null
+                si el siguiente nodo del ayudante no es nulo y si su edad es igual a la edad que se
+                pasó al método delete. Si es así, el bucle se detiene y el nodo temp apunta al nodo que se debe eliminar.
+                que el ayudante tome el siguiente nodo
+        si hay datos nuevamente o no sea null
+            actualiza el siguiente nodo donde está el ayudante para que apunte al nodo que está después del nodo que se debe
+            eliminar, lo que elimina el nodo que contiene la edad buscada.
      */
-    public void deleteByAge(byte age) throws Exception {
-        if (this.head != null) {
-            ListSE listCP = new ListSE();
-            Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getAge() <= age) {
-                    listCP.addToStart(temp.getData());
-                }
-                temp = temp.getNext();
-            }
-            this.head = listCP.getHead();
-        }
-        else
+    public void deleteByAge(byte age) throws ListSEException {
+        if(this.head!=null)
         {
+            if(this.head.getData().getAge() == age) {
+                this.head = this.head.getNext();
+            }
+            else {
+                Node temp = this.head;
+                while(temp!=null) {
+                    if(temp.getNext() != null && temp.getNext().getData().getAge() == age) {
+                        break;
+                    }
+                    temp= temp.getNext();
+                }
+                if(temp!= null) {
+                    temp.setNext(temp.getNext().getNext());
+                }
+                else {
+                    throw  new ListSEException("La edad "+ age + " no existe en la lista");
+                }
+            }
+        }
+        else {
             throw  new ListSEException("No hay datos en la lista");
         }
     }
 
-    /*
+    /**
     -Ejercicio 5: Obtener el promedio de edad de los niños de la lista
     Explicación:
     si hay datos
@@ -198,7 +215,7 @@ public class ListSE {
         que el ayudante me actualice pasándose al siguiente
         que se calcule el promedio de edad dividiendo la edad entre el contador devolviéndome un valor tipo float
      */
-    public float averageAge(){
+    public float averageAge() throws ListSEException {
         if (head != null){
             Node temp = head;
             int count = 0;
@@ -211,7 +228,62 @@ public class ListSE {
             return (float) ages/count;
         }
         else{
-            return (float) 0;
+            throw new ListSEException("La lista está vacía");
+        }
+    }
+
+    /**
+    Ejercicio 6: Generar un reporte que me diga cuantos niños hay de cada ciudad.
+     */
+    public int getCountKidsByLocationCode(String code) throws ListSEException {
+        int count = 0;
+        if (this.head != null) {
+            Node temp = this.head;
+            while (temp != null) {
+                if (temp.getData().getLocation().getCode().equals(code)) {
+                    count++;
+                }
+                temp = temp.getNext();
+            }
+            return count;
+        } else {
+            throw new ListSEException("La lista está vacía");
+        }
+    }
+
+    public int getCountKidsByDepartmentCode(String code) throws ListSEException{
+        int count = 0;
+        if (this.head != null) {
+            Node temp = this.head;
+            while (temp != null) {
+                if (temp.getData().getLocation().getCode().equals(code)) {
+                    count++;
+                }
+                temp = temp.getNext();
+            }
+            return count;
+        }
+        else{
+            throw new ListSEException("La lista está vacía");
+        }
+    }
+    /*
+    No es necesario añadir una excepción, ya que este
+    método simplemente recorre la lista enlazada y actualiza un informe ReportKidsDTO con
+    información de género y ubicación de los niños cuya edad es mayor que un valor dado.
+    Si la lista está vacía, no se realiza ninguna operación y no hay nada que manejar
+    excepcionalmente.
+     */
+    public void getReportKidsByLocationGendersByAge(byte age, ReportKidsDTO report){
+        if(head != null){
+            Node temp = this.head;
+            while(temp!=null){
+                if(temp.getData().getAge() > age){
+                    report.updateQuantity(temp.getData().getLocation().getName(),
+                            temp.getData().getGender());
+                }
+                temp = temp.getNext();
+            }
         }
     }
 
@@ -253,7 +325,11 @@ public class ListSE {
         que realice el paso similar al primer bucle, pero esta vez agrega todos los nodos que comienzan con la letra initial al final de la lista copia
     que se posicione en la cabeza la copia
      */
-    public void boysByLetter(char initial) throws ListSEException {
+    public void kidsByLetter(char initial) throws ListSEException {
+
+        if (this.head == null) {
+            throw new ListSEException("La lista está vacía");
+        }
 
         ListSE listCP = new ListSE();
         Node temp = this.head;
@@ -401,47 +477,6 @@ public class ListSE {
             temp = temp.getNext();
         }
         temp.setNext(newNode);
-    }
-
-    public int getCountKidsByLocationCode(String code) {
-        int count = 0;
-        if (this.head != null) {
-            Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getLocation().getCode().equals(code)) {
-                    count++;
-                }
-                temp = temp.getNext();
-            }
-        }
-        return count;
-    }
-
-    public int getCountKidsByDepartmentCode(String code) {
-        int count = 0;
-        if (this.head != null) {
-            Node temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getLocation().getCode().equals(code)) {
-                    count++;
-                }
-                temp = temp.getNext();
-            }
-        }
-        return count;
-    }
-
-    public void getReportKidsByLocationGendersByAge(byte age, ReportKidsDTO report){
-        if(head != null){
-            Node temp = this.head;
-            while(temp!=null){
-                if(temp.getData().getAge() > age){
-                    report.updateQuantity(temp.getData().getLocation().getName(),
-                            temp.getData().getGender());
-                }
-                temp = temp.getNext();
-            }
-        }
     }
 
 }

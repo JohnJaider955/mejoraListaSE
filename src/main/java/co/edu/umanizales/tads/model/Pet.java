@@ -15,5 +15,7 @@ public class Pet {
     @NotNull
     private int agePet;
     @NotNull
+    private String namePet;
+    @NotNull
     private LocationPets locationPets;
 }

@@ -1,12 +1,12 @@
 package co.edu.umanizales.tads.controller.dto;
 
-import co.edu.umanizales.tads.model.Location;
+import co.edu.umanizales.tads.model.LocationPets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class PetsByLocationDTO {
-    private Location location;
+    private LocationPets locationPets;
     private int quantity;
 }
