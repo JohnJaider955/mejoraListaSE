@@ -1,6 +1,5 @@
 package co.edu.umanizales.tads.service;
 
-import co.edu.umanizales.tads.model.Location;
 import co.edu.umanizales.tads.model.LocationPets;
 import lombok.Data;
 import org.springframework.stereotype.Service;

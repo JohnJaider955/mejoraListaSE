@@ -185,17 +185,109 @@ public class ListDE {
         }
     }
 
-    public void getReportPetsByLocationGendersByAge(byte age, ReportKidsDTO report){
+    public void getReportPetsByLocationGendersByAge(byte age, ReportPetsDTO report){
         if(head != null){
             NodeDE temp = this.head;
             while(temp!=null){
                 if(temp.getDataDE().getAgePet() > age){
-                    report.updateQuantity(temp.getDataDE().getLocationPets().getName(),
+                    report.updateQuantityPets(temp.getDataDE().getLocationPets().getName(),
                             temp.getDataDE().getGenderPet());
                 }
                 temp = temp.getNextDE();
             }
         }
+    }
+
+    //Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
+    public void passPetByPosition(String codePet, int positions) throws ListDEException{
+        if (head != null){
+            if(positions<size){
+                if(head.getDataDE().getCodePet()==codePet){
+
+                }
+                else{
+                    int count = 1;
+                    NodeDE temp = head;
+                    while(temp.getNextDE().getDataDE().getCodePet()!=codePet){
+                        temp = temp.getNextDE();
+                        count++;
+                        if(temp.getNextDE()!=null){
+                            return;
+                        }
+                    }
+                    NodeDE temp2 = new NodeDE(temp.getNextDE().getDataDE());
+                    temp2.setPrevious(temp);
+                    temp.setNextDE(temp2);
+                    if(positions >= count+1){
+                        addPetByPosition(temp2.getDataDE(), positions);
+                    }
+                }
+            }
+            else{
+                throw new ListDEException("La posición ingresada es mayor o igual al tamaño de la lista.");
+            }
+        }
+        else{
+            throw new ListDEException("La lista se encuentra vacía.");
+        }
+    }
+
+    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    public void afterwardsPetsPositions(String codePet, int positions) throws ListDEException {
+        if (head != null) {
+            if (positions < size) {
+                if (head.getDataDE().getCodePet() == codePet) {
+                    NodeDE node = new NodeDE(head.getNextDE().getDataDE());
+                    addPetByPosition(node.getDataDE(),positions + 1 );
+                    head = head.getNextDE();
+                    head.setPrevious(null);
+                } else {
+                    int count = 1;
+                    NodeDE temp = head;
+                    while (temp.getNextDE() != null && temp.getNextDE().getDataDE().getCodePet() != codePet) {
+                        temp = temp.getNextDE();
+                        count++;
+                    }
+                    if (temp.getNextDE() == null) {
+                        throw new ListDEException("No se encontró un nodo con la identificación proporcionada.");
+                    } else {
+                        NodeDE temp2 = new NodeDE(temp.getNextDE().getDataDE());
+                        temp.setNextDE(temp.getNextDE().getNextDE());
+                        if (temp.getNextDE() != null) {
+                            temp.getNextDE().setPrevious(temp);
+                        }
+                        addPetByPosition(temp2.getDataDE(), count + 1 + positions);
+                    }
+                }
+            } else {
+                throw new ListDEException("La posición proporcionada excede el tamaño de la lista");
+            }
+        } else {
+            throw new ListDEException("La lista se encuentra vacía.");
+        }
+    }
+
+    public void addPetByPosition(Pet pet, int position){
+        NodeDE newNode = new NodeDE(pet);
+        if (position == 0){
+            newNode.setNextDE(head);
+            if (head != null){
+                head.setPrevious(newNode);
+            }
+            head = newNode;
+        } else {
+            NodeDE temp = head;
+            for (int i = 0; i < position - 1; i++){
+                temp = temp.getNextDE();
+            }
+            newNode.setNextDE(temp.getNextDE());
+            if (temp.getNextDE()!=null){
+                temp.getNextDE().setPrevious(newNode);
+            }
+            temp.setNextDE(newNode);
+            newNode.setPrevious(temp);
+        }
+        size++;
     }
 
     public void addPetsToStart(Pet pet) {
@@ -242,33 +334,6 @@ public class ListDE {
         return count;
     }
 
-    public void passByPosition(String codePet, int positions){
-        if (head != null){
-            if(positions<size){
-                if(head.getDataDE().getCodePet()==codePet){
-
-                }
-                else{
-                    int count = 1;
-                    NodeDE temp = head;
-                    while(temp.getNextDE().getDataDE().getCodePet()!=codePet){
-                        temp = temp.getNextDE();
-                        count++;
-                        if(temp.getNextDE()!=null){
-                            return;
-                        }
-                    }
-                    NodeDE temp2=new NodeDE(temp.getNextDE().getDataDE());
-                    temp2.setPrevious(temp);
-                    temp.setNextDE(temp2);
-                    if(positions >= count+1){
-                        addPetsToStart(temp2.getDataDE());
-                    }
-                }
-            }
-        }
-    }
-
     public void boysByLetter(char initial) throws ListDEException{
 
         ListDE listCP = new ListDE();
@@ -294,6 +359,7 @@ public class ListDE {
     }
 
 }
+
 
 
 

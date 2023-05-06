@@ -174,8 +174,30 @@ public class ListSEController {
                 200, report,null),HttpStatus.OK);
     }
 
+    //Método que me permita decirle a un niño determinado que adelante un numero de posiciones dadas
+    @GetMapping(path="/passpositions/{positions}")
+    public ResponseEntity<ResponseDTO> passByPosition(@PathVariable String identification, int positions) {
+        try {
+            listSEService.getKids().passByPosition(identification, positions);
+            return new ResponseEntity<>(new ResponseDTO(200, "El niño ha adelantado de posición", null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Ha ocurrido un error al adelantar la posición del niño", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    @GetMapping(path="/afterwardspositions")
+    public ResponseEntity<ResponseDTO> afterwardsPositions(@PathVariable String identification, int positions) throws ListSEException {
+        try {
+            listSEService.getKids().afterwardsPositions(identification, positions);
+            return new ResponseEntity<>(new ResponseDTO(200, "El niño ha sido movido de posición", null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover al niño de posición", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/addtostart")
-    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) throws Exception {
+    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) throws ListSEException {
         listSEService.addToStart(kid);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha añadido al inicio.",
@@ -183,7 +205,7 @@ public class ListSEController {
     }
 
     @GetMapping("/addtofinal")
-    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) throws Exception {
+    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) throws ListSEException {
         listSEService.addToStart(kid);
         return new ResponseEntity<>(new ResponseDTO(
                 200, "Se ha añadido al final",
@@ -200,7 +222,7 @@ public class ListSEController {
 
     //Obtener un informe de niños por rango de edades
     @GetMapping(path="/rangeagekids")
-    public ResponseEntity<ResponseDTO> getRangeAgeKids() {
+    public ResponseEntity<ResponseDTO> getRangeAgeKids() throws ListSEException {
         List<RangeAgesKidsDTO> kidsRangeDTOList = new ArrayList<>();
 
         for(RangeAgeKids i: rangeAgeService.getRanges()){
@@ -208,12 +230,6 @@ public class ListSEController {
             kidsRangeDTOList.add(new RangeAgesKidsDTO(i, quantity));
         }
         return new ResponseEntity<>(new ResponseDTO(200, kidsRangeDTOList, null), HttpStatus.OK);
-    }
-
-    @GetMapping(path="/forwardpositions/{positions}")
-    public ResponseEntity<ResponseDTO> forwardPositions(@PathVariable String identification, int positions) throws Exception {
-        listSEService.getKids().passByPosition(identification, positions);
-        return new ResponseEntity<>(new ResponseDTO(200, "El niño ha adelantado de posición", null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/change_extremes")

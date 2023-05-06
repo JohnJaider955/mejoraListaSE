@@ -268,11 +268,10 @@ public class ListSE {
         }
     }
     /*
-    No es necesario añadir una excepción, ya que este
-    método simplemente recorre la lista enlazada y actualiza un informe ReportKidsDTO con
-    información de género y ubicación de los niños cuya edad es mayor que un valor dado.
-    Si la lista está vacía, no se realiza ninguna operación y no hay nada que manejar
-    excepcionalmente.
+    No es necesario añadir una excepción, ya que este método simplemente recorre la
+    lista enlazada y actualiza un informe ReportKidsDTO con información de género y ubicación
+    de los niños cuya edad es mayor que un valor dado. Si la lista está vacía, no se realiza
+    ninguna operación y no hay nada que manejar excepcionalmente.
      */
     public void getReportKidsByLocationGendersByAge(byte age, ReportKidsDTO report){
         if(head != null){
@@ -287,7 +286,115 @@ public class ListSE {
         }
     }
 
-    /*
+    /**
+    -Ejercicio 7: Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
+     Explicación:
+     hay datos
+        si las posiciones es menor al tamaño de la lista
+            en este punto, el método intentará buscar un nodo en la lista que tenga una propiedad
+            "identification" igual a la cadena de texto "identification" pasada como parámetro.
+            si encuentra dicho nodo, no hace nada y simplemente termina.
+                inicio un contador en 1
+                llamo a un ayudante y que se posicione en la cabeza
+                se itera sobre la lista hasta que se encuentra el nodo con la identificación especificada,
+                que el ayudante tome el siguiente nodo
+                que incremente el contador en cada iteración.
+                si el siguiente nodo es null, significa que la identificación especificada no se encontró en la lista y se sale del método.
+                si se encuentra el nodo con la identificación, se crea otro ayudante
+                este nuevo ayudante contiene la misma información que el nodo que se va a mover
+                si la posición especificada es mayor igual al número de nodos que se encontraron
+                antes de encontrar el nodo con la identificación especificada, entonces el segundo
+                ayudante se agrega al inicio de la lista
+                de lo contrario que el nodo temporal se agregue a la lista de la posición específica
+                por la cantidad de nodos que se encontró antes de encontrar el nodo con la identificación
+                especificada
+                que se añada el nodo a la lista en la posición calculada.
+     */
+    public void passByPosition(String identification, int positions) throws ListSEException{
+        if (head != null){
+            if(positions<size){
+                if(head.getData().getIdentification()==identification){
+
+                }
+                else{
+                    int count = 1;
+                    Node temp = head;
+                    while(temp.getNext().getData().getIdentification()!=identification){
+                        temp = temp.getNext();
+                        count++;
+                        if(temp.getNext()!=null){
+                            return;
+                        }
+                    }
+                    Node temp2 =new Node(temp.getNext().getData());
+                    temp.setNext(temp.getNext().getNext());
+                    if(positions >= count+1){
+                        addToStart(temp2.getData());
+                    }
+                    else{
+                        addByPosition((count+1) - positions, temp2.getData());
+                    }
+                }
+            }
+            else{
+                throw new ListSEException("La posición ingresada es mayor o igual al tamaño de la lista.");
+            }
+        }
+        else{
+            throw new ListSEException("La lista se encuentra vacía.");
+        }
+    }
+
+    /**
+    -Ejercicio 8: Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+     Explicación:
+        hay datos
+            si las posiciones es menor al tamaño de la lista
+            se verifica si el nodo con el identificador especificado es la cabeza de la lista.
+            si lo es, se crea un nuevo nodo a partir del segundo nodo en la lista y se inserta
+            después de la posición especificada. Luego, se establece el nuevo nodo como la nueva cabeza de la lista.
+            inicializo un contador en 1
+            llamo a un ayudante y que se posicione en la cabeza
+            si el nodo con el identificador especificado no es la cabeza de la lista, se itera
+            sobre la lista para encontrar el nodo con el identificador especificado
+            en cada iteración, se actualiza el con el siguiente nodo de la lista
+            si se encuentra el nodo con el identificador especificado, se llama un nuevo ayudante a
+            partir del nodo que se encuentra después del nodo con el identificador especificado y
+            se inserta después de la posición especificada
+     */
+    public void afterwardsPositions(String identification, int positions) throws ListSEException {
+        if (head!=null){
+            if(positions<size){
+                if(head.getData().getIdentification()==identification){
+                    Node node = new Node(head.getNext().getData());
+                    addByPosition(positions+1, node.getData());
+                    head = head.getNext();
+                }
+                else{
+                    int count = 1;
+                    Node temp = head;
+                    while(temp.getNext().getData().getIdentification()!=identification){
+                        temp = temp.getNext();
+                        count++;
+                        if(temp.getNext()!=null){
+                            return;
+                        }
+                    }
+                    Node temp2=new Node(temp.getNext().getData());
+                    temp.setNext(temp.getNext().getNext());
+                    addByPosition(count+1+positions, temp2.getData());
+                }
+            }
+            else{
+                throw new ListSEException("La posición proporcionada excede el tamaño de la lista");
+            }
+        }
+        else{
+            throw new ListSEException("La lista se encuentra vacía.");
+        }
+    }
+
+    /**
     -Ejercicio 9: Obtener un informe de niños por rango de edades
     Explicación:
     llamo a un ayudante y que se posicione en la cabeza
@@ -298,7 +405,10 @@ public class ListSE {
             que el ayudante me actualice pasándose al siguiente
     que me retorne el contador devolviéndome su valor final
      */
-    public int rangeByAge(int min, int max){
+    public int rangeByAge(int min, int max) throws ListSEException{
+        if (head == null) {
+            throw new ListSEException("La lista se encuentra vacía.");
+        }
         Node temp = head;
         int count = 0;
             while(temp != null){
@@ -348,39 +458,6 @@ public class ListSE {
             temp = temp.getNext();
         }
         this.head = listCP.getHead();
-    }
-
-
-    /*
-    -Ejercicio 7: Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
-     */
-    public void passByPosition(String identification, int positions) throws Exception {
-        if (head != null){
-            if(positions<size){
-                if(head.getData().getIdentification()==identification){
-
-                }
-                else{
-                    int count = 1;
-                    Node temp = head;
-                    while(temp.getNext().getData().getIdentification()!=identification){
-                        temp = temp.getNext();
-                        count++;
-                        if(temp.getNext()!=null){
-                            return;
-                        }
-                    }
-                    Node temp2 =new Node(temp.getNext().getData());
-                    temp.setNext(temp.getNext().getNext());
-                    if(positions >= count+1){
-                        addToStart(temp2.getData());
-                    }
-                    else{
-                        addByPosition((count+1) - positions, temp2.getData());
-                    }
-                }
-            }
-        }
     }
 
     public void addByPosition(int position, Kid kid) throws ListSEException {

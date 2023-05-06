@@ -1,11 +1,11 @@
 package co.edu.umanizales.tads.controller;
 
-import co.edu.umanizales.tads.controller.dto.KidsByLocationDTO;
 import co.edu.umanizales.tads.controller.dto.PetsByLocationDTO;
+import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
+import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
 import co.edu.umanizales.tads.controller.dto.ResponseDTO;
 import co.edu.umanizales.tads.exception.ListDEException;
 import co.edu.umanizales.tads.exception.ListSEException;
-import co.edu.umanizales.tads.model.Location;
 import co.edu.umanizales.tads.model.LocationPets;
 import co.edu.umanizales.tads.model.Pet;
 import co.edu.umanizales.tads.service.ListDEService;
@@ -13,15 +13,13 @@ import co.edu.umanizales.tads.service.LocationPetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping(path = "/listde")
 public class ListDEController {
     @Autowired
     private ListDEService listDEService;
@@ -116,7 +114,7 @@ public class ListDEController {
         try {
             listDEService.getPets().averageAgePets();
             return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha calculado el promedio de edad",
+                    200, "Se ha calculado el promedio de edad de las mascotas",
                     null), HttpStatus.OK);
         } catch (ListDEException e) {
             return new ResponseEntity<>(new ResponseDTO(
@@ -165,4 +163,38 @@ public class ListDEController {
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(path = "/petsbylocationgenders/{age}")
+    public ResponseEntity<ResponseDTO> getReportPetsLocationGenders(@PathVariable byte age) {
+        ReportPetsDTO reportPets =
+                new ReportPetsDTO(locationPetsService.getLocationsPetsByCodeSize(8));
+        listDEService.getPets().getReportPetsByLocationGendersByAge(age,reportPets);
+        return new ResponseEntity<>(new ResponseDTO(
+                200, reportPets,null),HttpStatus.OK);
+    }
+
+    //Método que me permita decirle a un niño determinado que adelante un numero de posiciones dadas
+    @GetMapping(path="/passpetspositions/{positions}")
+    public ResponseEntity<ResponseDTO> passByPosition(@PathVariable String identification, int positions) {
+        try {
+            listDEService.getPets().passPetByPosition(identification, positions);
+            return new ResponseEntity<>(new ResponseDTO(200, "La mascota se ha adelantado de posición", null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Ha ocurrido un error al adelantar la posición de la mascota",
+                    null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    @GetMapping(path="/afterwardspetspositions/{positions}")
+    public ResponseEntity<ResponseDTO> afterwardsPositions(@PathVariable String identification, int positions) {
+        try {
+            listDEService.getPets().afterwardsPetsPositions(identification, positions);
+            return new ResponseEntity<>(new ResponseDTO(200, "La mascota ha sido movido de posición", null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover a la mascota de posición", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
