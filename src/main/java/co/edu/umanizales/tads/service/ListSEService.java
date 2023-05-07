@@ -19,11 +19,6 @@ public class ListSEService {
         kids = new ListSE();
     }
 
-     //public Node getKids() { return kids.getHead();}
-    /*
-    public Node getKids()
-     */
-
     public void deleteByAge(byte age) throws ListSEException {
         kids.deleteByAge(age);
     }

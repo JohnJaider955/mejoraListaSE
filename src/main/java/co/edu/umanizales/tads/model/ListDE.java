@@ -198,7 +198,7 @@ public class ListDE {
         }
     }
 
-    //Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
+    //Método que me permita decirle a una mascota determinada que adelante un número de posiciones dadas
     public void passPetByPosition(String codePet, int positions) throws ListDEException{
         if (head != null){
             if(positions<size){
@@ -232,7 +232,7 @@ public class ListDE {
         }
     }
 
-    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    //Método que me permita decirle a una mascota determinada que pierda un numero de posiciones dadas
     public void afterwardsPetsPositions(String codePet, int positions) throws ListDEException {
         if (head != null) {
             if (positions < size) {
@@ -265,6 +265,51 @@ public class ListDE {
         } else {
             throw new ListDEException("La lista se encuentra vacía.");
         }
+    }
+
+    //Obtener un informe de mascotas por rango de edades
+    public int rangePetsByAge(int min, int max) throws ListDEException{
+        if (head == null) {
+            throw new ListDEException("La lista se encuentra vacía.");
+        }
+        NodeDE temp = head;
+        int count = 0;
+        while(temp != null){
+            if(temp.getDataDE().getAgePet() >= min && temp.getDataDE().getAgePet() <= max){
+                count++;
+            }
+            temp = temp.getNextDE();
+        }
+        return count;
+    }
+
+    //Implementar un método que me permita enviar al final de la lista a las mascotas que su nombre inicie con una letra dada
+    public void petsByLetter(char initial) throws ListDEException{
+
+        if (this.head == null) {
+            throw new ListDEException("La lista está vacía");
+        }
+
+        ListDE listCP = new ListDE();
+        NodeDE temp = this.head;
+
+        while (temp != null){
+            if (temp.getDataDE().getNamePet().charAt(0) != Character.toUpperCase(initial)){
+                listCP.addPet(temp.getDataDE());
+            }
+            temp = temp.getNextDE();
+        }
+
+        temp = this.head;
+
+        while (temp != null){
+            if (temp.getDataDE().getNamePet().charAt(0) == Character.toUpperCase(initial)){
+                listCP.addPet(temp.getDataDE());
+            }
+            temp = temp.getNextDE();
+        }
+
+        this.head = listCP.getHead();
     }
 
     public void addPetByPosition(Pet pet, int position){
@@ -302,7 +347,7 @@ public class ListDE {
         size++;
     }
 
-    public void changesPetExtremes() {
+    public void changesPetExtremes() throws ListDEException{
         if (this.head != null && this.head.getNextDE() != null) {
             NodeDE temp = this.head;
             while (temp.getNextDE() != null) {
@@ -320,42 +365,10 @@ public class ListDE {
             temp.setNextDE(headNext);
             temp.setPrevious(tempPrev);
         }
-    }
-
-    public int rangePetsByAge(int min, int max){
-        NodeDE temp = head;
-        int count = 0;
-        while(temp != null){
-            if(temp.getDataDE().getAgePet() >= min && temp.getDataDE().getAgePet() <= max){
-                count++;
-            }
-            temp = temp.getNextDE();
+        else
+        {
+            throw new ListDEException("No es posible cambiar de extremos.");
         }
-        return count;
-    }
-
-    public void boysByLetter(char initial) throws ListDEException{
-
-        ListDE listCP = new ListDE();
-        NodeDE temp = this.head;
-
-        while (temp != null){
-            if (temp.getDataDE().getNamePet().charAt(0) != Character.toUpperCase(initial)){
-                listCP.addPet(temp.getDataDE());
-            }
-            temp = temp.getNextDE();
-        }
-
-        temp = this.head;
-
-        while (temp != null){
-            if (temp.getDataDE().getNamePet().charAt(0) == Character.toUpperCase(initial)){
-                listCP.addPet(temp.getDataDE());
-            }
-            temp = temp.getNextDE();
-        }
-
-        this.head = listCP.getHead();
     }
 
 }

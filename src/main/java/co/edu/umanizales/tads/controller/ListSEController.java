@@ -192,51 +192,49 @@ public class ListSEController {
             listSEService.getKids().afterwardsPositions(identification, positions);
             return new ResponseEntity<>(new ResponseDTO(200, "El niño ha sido movido de posición", null), HttpStatus.OK);
         } catch (ListSEException e) {
-            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover al niño de posición", null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover al niño de posición",
+                    null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @GetMapping("/addtostart")
-    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) throws ListSEException {
-        listSEService.addToStart(kid);
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha añadido al inicio.",
-                null), HttpStatus.OK);
-    }
-
-    @GetMapping("/addtofinal")
-    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) throws ListSEException {
-        listSEService.addToStart(kid);
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha añadido al final",
-                null), HttpStatus.OK);
-    }
-
-    //Implementar un método que me permita enviar al final de la lista a los niños que su nombre inicie con una letra dada
-    @GetMapping(path="/kidletter/{initial}")
-    public ResponseEntity<ResponseDTO> boysByLetter(@PathVariable char initial) throws ListSEException {
-        listSEService.getKids().kidsByLetter(Character.toUpperCase(initial));
-        return new ResponseEntity<>(new ResponseDTO(200, "Los niños con esa letra se han enviado al final de la lista.",
-                null), HttpStatus.OK);
     }
 
     //Obtener un informe de niños por rango de edades
     @GetMapping(path="/rangeagekids")
-    public ResponseEntity<ResponseDTO> getRangeAgeKids() throws ListSEException {
+    public ResponseEntity<ResponseDTO> getRangeAgeKids() {
         List<RangeAgesKidsDTO> kidsRangeDTOList = new ArrayList<>();
-
-        for(RangeAgeKids i: rangeAgeService.getRanges()){
-            int quantity = listSEService.getKids().rangeByAge(i.getFrom(), i.getTo());
-            kidsRangeDTOList.add(new RangeAgesKidsDTO(i, quantity));
+        try {
+            for(RangeAgeKids i: rangeAgeService.getRanges()){
+                int quantity = listSEService.getKids().rangeByAge(i.getFrom(), i.getTo());
+                kidsRangeDTOList.add(new RangeAgesKidsDTO(i, quantity));
+            }
+            return new ResponseEntity<>(new ResponseDTO(200, kidsRangeDTOList, null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al obtener el rango de edades", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ResponseDTO(200, kidsRangeDTOList, null), HttpStatus.OK);
+    }
+
+    //Implementar un método que me permita enviar al final de la lista a los niños que su nombre inicie con una letra dada
+    @GetMapping(path="/kidletter/{initial}")
+    public ResponseEntity<ResponseDTO> boysByLetter(@PathVariable char initial) {
+        try {
+            listSEService.getKids().kidsByLetter(Character.toUpperCase(initial));
+            return new ResponseEntity<>(new ResponseDTO(200, "Los niños con esa letra se han enviado al final de la lista.", null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Ocurrió un error al enviar al final la lista de niños por la letra dada.",
+                    null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path = "/change_extremes")
-    public ResponseEntity<ResponseDTO> changeExtremes() throws ListSEException {
-        listSEService.getKids().changesExtremes();
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
+    public ResponseEntity<ResponseDTO> changeExtremes() {
+        try {
+            listSEService.getKids().changesExtremes();
+            return new ResponseEntity<>(new ResponseDTO(
+                    200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    500, "Ha ocurrido un error al intercambiar los extremos", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping
@@ -258,5 +256,19 @@ public class ListSEController {
                 200, "Se ha añadido", null), HttpStatus.OK);
     }
 
+    @GetMapping("/addtostart")
+    public ResponseEntity<ResponseDTO> addToStart(@RequestBody Kid kid) throws ListSEException {
+        listSEService.addToStart(kid);
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido al inicio.",
+                null), HttpStatus.OK);
+    }
 
+    @GetMapping("/addtofinal")
+    public ResponseEntity<ResponseDTO> addToFinal(@RequestBody Kid kid) throws ListSEException {
+        listSEService.addToStart(kid);
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido al final",
+                null), HttpStatus.OK);
+    }
 }

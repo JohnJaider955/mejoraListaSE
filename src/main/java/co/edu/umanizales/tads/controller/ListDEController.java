@@ -1,15 +1,12 @@
 package co.edu.umanizales.tads.controller;
 
-import co.edu.umanizales.tads.controller.dto.PetsByLocationDTO;
-import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
-import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
-import co.edu.umanizales.tads.controller.dto.ResponseDTO;
+import co.edu.umanizales.tads.controller.dto.*;
 import co.edu.umanizales.tads.exception.ListDEException;
 import co.edu.umanizales.tads.exception.ListSEException;
-import co.edu.umanizales.tads.model.LocationPets;
-import co.edu.umanizales.tads.model.Pet;
+import co.edu.umanizales.tads.model.*;
 import co.edu.umanizales.tads.service.ListDEService;
 import co.edu.umanizales.tads.service.LocationPetsService;
+import co.edu.umanizales.tads.service.RangeAgePetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +23,9 @@ public class ListDEController {
 
     @Autowired
     private LocationPetsService locationPetsService;
+
+    @Autowired
+    private RangeAgePetsService rangeAgePetsService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getPets() {
@@ -66,7 +66,7 @@ public class ListDEController {
 
     //Mascotas masculinas al inicio y femeninos al final.
     @GetMapping("/orderpetsmaletostart")
-    public ResponseEntity<ResponseDTO> orderBoysToStart() {
+    public ResponseEntity<ResponseDTO> orderPetsMaleToStart() {
         try {
             listDEService.getPets().orderPetsToStart();
             return new ResponseEntity<>(new ResponseDTO(
@@ -81,7 +81,7 @@ public class ListDEController {
 
     //Intercalar mascota masculina, femenina, masculina, femenina
     @GetMapping(path="/petsintercalate")
-    public ResponseEntity<ResponseDTO> boyIntercalateGirl()  {
+    public ResponseEntity<ResponseDTO> petMaleIntercalateFemale()  {
         try {
             listDEService.getPets().intercalatePetsGender();
             return new ResponseEntity<>(new ResponseDTO(200, "Las mascotas se han intercalado.",
@@ -95,7 +95,7 @@ public class ListDEController {
 
     //Dada una edad eliminar a las mascotas del código dado
     @GetMapping(path = "/deletepet/{code}")
-    public ResponseEntity<ResponseDTO> deleteKidByAge(@PathVariable String code)  {
+    public ResponseEntity<ResponseDTO> deletePetByAge(@PathVariable String code)  {
         try {
             listDEService.deletePetByIdentification(code);
             return new ResponseEntity<>(new ResponseDTO(
@@ -110,7 +110,7 @@ public class ListDEController {
 
     //Obtener el promedio de edad de las mascotas de la lista
     @GetMapping(path="/averageagepets")
-    public ResponseEntity<ResponseDTO> averageAge() {
+    public ResponseEntity<ResponseDTO> averagePetAge() {
         try {
             listDEService.getPets().averageAgePets();
             return new ResponseEntity<>(new ResponseDTO(
@@ -125,7 +125,7 @@ public class ListDEController {
 
     //Generar un reporte que me diga cuantas mascotas hay de cada ciudad.
     @GetMapping(path = "/petsbylocations")
-    public ResponseEntity<ResponseDTO> getKidsByLocation() {
+    public ResponseEntity<ResponseDTO> getPetsByLocation() {
         try {
             List<PetsByLocationDTO> petsByLocationDTOList = new ArrayList<>();
             for (LocationPets loc : locationPetsService.getLocationsPets()) {
@@ -145,7 +145,7 @@ public class ListDEController {
     }
 
     @GetMapping(path = "/petsbydepartments")
-    public ResponseEntity<ResponseDTO> getKidsByDepartmentCode() {
+    public ResponseEntity<ResponseDTO> getPetsByDepartmentCode() {
         List<PetsByLocationDTO> petsByLocationDTOList = new ArrayList<>();
         try {
             for (LocationPets loc : locationPetsService.getLocationsPets()) {
@@ -196,5 +196,62 @@ public class ListDEController {
         }
     }
 
+    //Obtener un informe de niños por rango de edades
+    @GetMapping(path="/rangeagekidspets")
+    public ResponseEntity<ResponseDTO> getRangeAgePets() {
+        List<RangeAgesPetsDTO> petsRangeDTOList = new ArrayList<>();
+        try {
+            for(RangeAgePets i: rangeAgePetsService.getRangesPets()){
+                int quantity = listDEService.getPets().rangePetsByAge(i.getFromPet(), i.getToPet());
+                petsRangeDTOList.add(new RangeAgesPetsDTO(i, quantity));
+            }
+            return new ResponseEntity<>(new ResponseDTO(200, petsRangeDTOList, null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al obtener el rango de edades", null),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    //Implementar un método que me permita enviar al final de la lista a las mascotas que su nombre inicie con una letra dada
+    @GetMapping(path="/petletter/{initial}")
+    public ResponseEntity<ResponseDTO> boysByLetter(@PathVariable char initial) {
+        try {
+            listDEService.getPets().petsByLetter(Character.toUpperCase(initial));
+            return new ResponseEntity<>(new ResponseDTO(200, "Las mascotas con esa letra se han enviado al final de la lista.", null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Ocurrió un error al enviar al final la lista de mascotas por la letra dada.",
+                    null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(path = "/change_extremes")
+    public ResponseEntity<ResponseDTO> changeExtremes() {
+        try {
+            listDEService.getPets().changesPetExtremes();
+            return new ResponseEntity<>(new ResponseDTO(
+                    200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    500, "Ha ocurrido un error al intercambiar los extremos", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<ResponseDTO> addPet(@RequestBody PetDTO petDTO) {
+        LocationPets locationPets = locationPetsService.getLocationsPetsByCode(petDTO.getCodeLocationPet());
+        if (locationPets == null) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    404, "La ubicación no existe ", null), HttpStatus.OK);
+        } try {
+            listDEService.getPets().addPet(new Pet(petDTO.getIdentificationPet(),
+                    petDTO.getGenderPet(), petDTO.getAgePet(),
+                    petDTO.getNamePet(), locationPets));
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    409, "Ya existe una mascota con ese código", null
+            ), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido.", null), HttpStatus.OK);
+    }
 }

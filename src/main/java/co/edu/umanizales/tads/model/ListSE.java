@@ -5,8 +5,6 @@ import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
 import co.edu.umanizales.tads.exception.ListSEException;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class ListSE {
     private Node head;
@@ -420,8 +418,7 @@ public class ListSE {
         return count;
     }
 
-
-    /*
+    /**
     -Ejercicio 10: Implementar un método que me permita enviar al final de la lista a los niños que
     su nombre inicie con una letra dada
     Explicación:
@@ -461,13 +458,16 @@ public class ListSE {
     }
 
     public void addByPosition(int position, Kid kid) throws ListSEException {
-        if (head!=null) {
+        if (position < 1 || position > size + 1) {
+            throw new ListSEException("La posición proporcionada no es válida.");
+        }
+        if (head != null) {
             if (position == 1) {
                 addToStart(kid);
             } else {
                 Node temp = head;
-                int cont =1;
-                while (temp != null && cont<position-1)
+                int cont = 1;
+                while (temp != null && cont < position - 1)
                 {
                     temp = temp.getNext();
                     cont++;
@@ -476,15 +476,15 @@ public class ListSE {
                     Node newNode = new Node(kid);
                     newNode.setNext(temp.getNext());
                     temp.setNext(newNode);
-
                 } else {
                     add(kid);
                 }
             }
-        }else{
+        } else {
             add(kid);
         }
     }
+
 
     /*
     si hay datos en la cabeza y si en el siguiente nodo también hay datos
@@ -557,3 +557,4 @@ public class ListSE {
     }
 
 }
+
