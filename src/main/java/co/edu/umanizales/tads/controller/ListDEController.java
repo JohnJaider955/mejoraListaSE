@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,28 @@ public class ListDEController {
                 200, listDEService.getPets(), null), HttpStatus.OK);
     }
 
-    //Adicionar niños
+    @PostMapping
+    public ResponseEntity<ResponseDTO> addPet(@RequestBody @Valid PetDTO petDTO) {
+        LocationPets locationPets = locationPetsService.getLocationsPetsByCode(petDTO.getCodeLocationPet());
+        if (locationPets == null) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    404, "La ubicación no existe ", null), HttpStatus.OK);
+        } try {
+            listDEService.getPets().addPet(new Pet(petDTO.getIdentificationPet(),
+                    petDTO.getGenderPet(), petDTO.getAgePet(),
+                    petDTO.getNamePet(), locationPets));
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    409, "Ya existe una mascota con ese código", null
+            ), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido.", null), HttpStatus.OK);
+    }
+
+    //Adicionar mascotas
     @GetMapping(path = "/addpet")
-    public ResponseEntity<ResponseDTO> add(@RequestBody Pet pet) {
+    public ResponseEntity<ResponseDTO> add(@RequestBody @Valid Pet pet) {
         try {
             if (pet == null) {
                 throw new ListDEException("La mascota no tiene datos");
@@ -173,7 +193,7 @@ public class ListDEController {
                 200, reportPets,null),HttpStatus.OK);
     }
 
-    //Método que me permita decirle a un niño determinado que adelante un numero de posiciones dadas
+    //Método que me permita decirle a una mascota determinada que adelante un numero de posiciones dadas
     @GetMapping(path="/passpetspositions/{positions}")
     public ResponseEntity<ResponseDTO> passByPosition(@PathVariable String identification, int positions) {
         try {
@@ -185,7 +205,7 @@ public class ListDEController {
         }
     }
 
-    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    //Método que me permita decirle a una mascota determinada que pierda un numero de posiciones dadas
     @GetMapping(path="/afterwardspetspositions/{positions}")
     public ResponseEntity<ResponseDTO> afterwardsPositions(@PathVariable String identification, int positions) {
         try {
@@ -196,7 +216,7 @@ public class ListDEController {
         }
     }
 
-    //Obtener un informe de niños por rango de edades
+    //Obtener un informe de mascotas por rango de edades
     @GetMapping(path="/rangeagekidspets")
     public ResponseEntity<ResponseDTO> getRangeAgePets() {
         List<RangeAgesPetsDTO> petsRangeDTOList = new ArrayList<>();
@@ -234,24 +254,5 @@ public class ListDEController {
             return new ResponseEntity<>(new ResponseDTO(
                     500, "Ha ocurrido un error al intercambiar los extremos", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PostMapping
-    public ResponseEntity<ResponseDTO> addPet(@RequestBody PetDTO petDTO) {
-        LocationPets locationPets = locationPetsService.getLocationsPetsByCode(petDTO.getCodeLocationPet());
-        if (locationPets == null) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe ", null), HttpStatus.OK);
-        } try {
-            listDEService.getPets().addPet(new Pet(petDTO.getIdentificationPet(),
-                    petDTO.getGenderPet(), petDTO.getAgePet(),
-                    petDTO.getNamePet(), locationPets));
-        } catch (ListDEException e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, "Ya existe una mascota con ese código", null
-            ), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha añadido.", null), HttpStatus.OK);
     }
 }

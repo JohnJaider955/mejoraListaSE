@@ -312,7 +312,10 @@ public class ListDE {
         this.head = listCP.getHead();
     }
 
-    public void addPetByPosition(Pet pet, int position){
+    public void addPetByPosition(Pet pet, int position) throws ListDEException{
+        if (position < 0 || position > size) {
+            throw new ListDEException("Posición inválida");
+        }
         NodeDE newNode = new NodeDE(pet);
         if (position == 0){
             newNode.setNextDE(head);

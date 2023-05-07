@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +36,29 @@ public class ListSEController {
                 200, listSEService.getKids(), null), HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<ResponseDTO> addKid(@RequestBody @Valid KidDTO kidDTO) {
+        Location location = locationService.getLocationsByCode(kidDTO.getCodeLocation());
+        if (location == null) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    404, "La ubicación no existe ", null), HttpStatus.OK);
+        } try {
+            listSEService.getKids().add(new Kid(kidDTO.getIdentification(),
+                    kidDTO.getName(), kidDTO.getAge(),
+                    kidDTO.getGender(), location));
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    409, "Ya existe un niño con ese código", null
+            ), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha añadido", null), HttpStatus.OK);
+    }
+
+
     //Adicionar niños
     @GetMapping(path = "/add")
-    public ResponseEntity<ResponseDTO> add(@RequestBody Kid kid) {
+    public ResponseEntity<ResponseDTO> add(@RequestBody @Valid Kid kid) {
         try {
             if (kid == null) {
                 throw new ListSEException("El niño no tiene datos");
@@ -235,25 +256,6 @@ public class ListSEController {
             return new ResponseEntity<>(new ResponseDTO(
                     500, "Ha ocurrido un error al intercambiar los extremos", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @PostMapping
-    public ResponseEntity<ResponseDTO> addKid(@RequestBody KidDTO kidDTO) {
-        Location location = locationService.getLocationsByCode(kidDTO.getCodeLocation());
-        if (location == null) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    404, "La ubicación no existe ", null), HttpStatus.OK);
-        } try {
-            listSEService.getKids().add(new Kid(kidDTO.getIdentification(),
-                    kidDTO.getName(), kidDTO.getAge(),
-                    kidDTO.getGender(), location));
-        } catch (ListSEException e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    409, "Ya existe un niño con ese código", null
-            ), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(new ResponseDTO(
-                200, "Se ha añadido", null), HttpStatus.OK);
     }
 
     @GetMapping("/addtostart")
