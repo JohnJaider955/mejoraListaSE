@@ -114,6 +114,7 @@ public class ListDEController {
     }
 
     //Dada una edad eliminar a las mascotas del código dado
+    /*
     @GetMapping(path = "/deletepet/{code}")
     public ResponseEntity<ResponseDTO> deletePetByAge(@PathVariable String code)  {
         try {
@@ -127,6 +128,7 @@ public class ListDEController {
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+     */
 
     //Obtener el promedio de edad de las mascotas de la lista
     @GetMapping(path="/averageagepets")
@@ -254,5 +256,14 @@ public class ListDEController {
             return new ResponseEntity<>(new ResponseDTO(
                     500, "Ha ocurrido un error al intercambiar los extremos", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    //Llamo en el controller el método hecho en listDE
+    @GetMapping(path = "/deletekamikaze/{codePet}")
+    public ResponseEntity<ResponseDTO> deleteKamikazeByPosition(@PathVariable String codePet)  {
+            listDEService.deleteByCode(codePet);
+            return new ResponseEntity<>(new ResponseDTO(
+                    200, "Se ha eliminado",
+                    null), HttpStatus.OK);
     }
 }

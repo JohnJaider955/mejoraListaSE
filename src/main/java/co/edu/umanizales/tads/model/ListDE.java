@@ -374,6 +374,47 @@ public class ListDE {
         }
     }
 
+    //Ejercicio sustentación: Doblemente enlazada
+    /*
+    Explicación:
+    Si hay datos o no esté vacío
+        Si en la cabeza coincide con la identificación de la mascota almacenada con el código a comparar y eliminar
+        si es así, que actualice el nodo (la cabeza) que apunte al siguiente nodo en la lista
+            si la cabeza hay datos
+            que el nodo previo se actualice a nulo (al ser el primero, atrás no hay nada)
+        si no, si el primer nodo, o en la cabeza no está el nodo a eliminar se empieza a buscar en los nodos
+            llamo a un ayudante y que se posicione en la cabeza
+            mientras hayan datos o no sea nulo
+                que el ayudante compruebe si en ese nodo contiene el código de la mascota a eliminar
+                que el ayudante tome igual el nodo anterior y actualice al nodo siguiente para llegar al nodo actual
+                que se pase el ayudante
+                    si ahí en el nodo siguiente donde está el ayudante hay datos o no sea nulo
+                    que el ayudante actualice al nodo previo para que apunte al nodo actual
+                    que se rompa la iteración de búsqueda al eliminar el nodo con el código a eliminar
+                que el ayudante tome el siguiente nodo (o se pase al final).
+     */
+    public void deleteKamikazeByPosition(String codePet) {
+        if (this.head != null) {
+            if (this.head.getDataDE().getCodePet().equals(codePet)) {
+                this.head = this.head.getNextDE();
+                if (this.head != null) {
+                    this.head.setPrevious(null);
+                }
+            } else {
+                NodeDE temp = this.head;
+                while (temp != null) {
+                    if (temp.getDataDE().getCodePet().equals(codePet)) {
+                        temp.getPrevious().setNextDE(temp.getNextDE());
+                        if (temp.getNextDE() != null) {
+                            temp.getNextDE().setPrevious(temp.getPrevious());
+                        }
+                        return;
+                    }
+                    temp = temp.getNextDE();
+                }
+            }
+        }
+    }
 }
 
 
