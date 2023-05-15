@@ -556,5 +556,12 @@ public class ListSE {
         temp.setNext(newNode);
     }
 
+    /**
+    La implementación de los throw es con el objetivo de lograr capturar algún error y logre
+    finalizar correctamente los métodos, sin ser tan abrupto.
+     La idea, es mostrar  un error o una situación inusual que ocurre durante la ejecución de un programa.
+     y tome medidas adecuadas para manejar el error
+     */
+
 }
 

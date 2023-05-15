@@ -13,6 +13,19 @@ public class ListDE {
     private int size;
 
     //Adicionar
+    /**
+     si hay datos
+        llamo a un ayudante y que se posicione en la cabeza
+        mientras en el siguiente nodo, o en el brazo exista algo
+            que el ayudante se pase al siguiente nodo
+            que se cree un nuevo nodo con el objeto led que se proporcionó previamente
+        que el ayudante se pase al nodo siguiente y se establezca como nuevo nodo
+        que se establezca el nodo anterior del nuevo nodo con el ayudante
+
+     si está vacía, que se establezca como primer nodo siendo la cabeza
+
+     que se incremente el tamaño de la lista
+     */
     public void addPet(Pet pet) throws ListDEException {
         if (this.head != null) {
             NodeDE temp = this.head;
@@ -35,6 +48,17 @@ public class ListDE {
     }
 
     //Invertir lista
+    /**
+    Si hay datos
+    si
+        creo una lista copia temporal
+        llamo a un ayudante y le digo que se posicione en la cabeza
+        mientras hayan datos o no sea null
+            posiciono la lista copia al inicio junto al ayudante con los datos
+            que el ayudante tome el siguiente nodo (o se pase al final)
+
+            que se posicione en la cabeza la copia.
+     */
     public void invertPets() throws ListDEException{
         if (this.head != null) {
             ListDE listCP = new ListDE();
@@ -51,6 +75,17 @@ public class ListDE {
     }
 
     //Mascotas masculinas al inicio y femeninos al final.
+    /*
+    si hay datos
+    sí
+        creo una lista copia temporal
+        llamo a un ayudante y le digo que se posicione en la cabeza
+        mientras hayan datos o no sea null
+            compruebo si el género es masculino, si es así que se agregue al inicio junto al ayudante
+            si es femenino, que se agregue al final
+            que el ayudante tome el siguiente nodo (o se pase al final)
+            que se posicione en la cabeza la copia.
+     */
     public void orderPetsToStart() throws ListDEException {
         if (this.head != null) {
             ListDE listCP = new ListDE();
@@ -71,6 +106,18 @@ public class ListDE {
     }
 
     //Intercalar mascota masculino, femenino, masculino, femenino
+    /**
+    Se crean dos nuevas listas enlazadas para separar los nodos de la lista original según el género
+    llamo un ayudante y que se posicione en la cabeza original
+    mientras hayan datos o no sea null
+        que ayudante compruebe si el nodo actual es masculino o femenino y que se agregue a la lista que corresponda
+        que se almacenen en el nodo actual
+    que se cree una nueva lista vacía para almacenar los nodos de la lista original en un orden deseado
+    que se creen unos nodos temporales y que se posicionen en la cabeza de las listas de niños y niñas previas
+    mientras hayan datos o no sean nulos en cada nodo de niños y niñas
+        que se agregue el nodo a la nueva lista
+    que se posicione en la cabeza de la lista original a la nueva lista de niños intercalados
+     */
     public void intercalatePetsGender() throws ListDEException{
         ListDE listPetMale = new ListDE();
         ListDE listPetFemale = new ListDE();
@@ -106,6 +153,24 @@ public class ListDE {
     }
 
     //Dada un código eliminar a las mascotas del código dado
+    /**
+    Si hay datos
+        si el primer nodo coincide o es igual con el código dado previamente
+        Si es así, que actualice el primer nodo para que apunte al siguiente nodo en la lista
+        si aún hay datos en la lista
+            si hay algún nodo restante, que se establezca el nodo anterior del nuevo primer nodo como nulo
+        si no
+            llamo a un ayudante y que se posicione en la cabeza
+            mientras hayan datos o no sea null
+                verificar si el código del nodo actual, donde está parado el ayudante coincide
+                que el ayudante también tome el nodo previo
+                 y si código coincide, que se actualicen los enlaces de los nodos
+                Si en el siguiente nodo al nodo actual hay datos
+                    si lo hay, que se establece el nodo anterior del siguiente nodo (donde está el ayudante)
+                    como el anterior del nodo actual
+                si el nodo es eliminado, que retorne o se salga del método
+            que el ayudante tome el siguiente nodo (o se pase al final)
+     */
     public void deletePetByIdentification(String code) throws ListSEException {
         if (this.head != null) {
             if (this.head.getDataDE().getCodePet().equals(code)) {
@@ -135,6 +200,15 @@ public class ListDE {
     }
 
     //Obtener el promedio de edad de las mascotas de la lista
+    /**
+    si hay datos
+        llamo a un ayudante y que se posicione en la cabeza
+        se inicializa las variables contador y age en 0 para añadir las cantidades (num de nodos y suma de edades)
+        mientras en el nodo exista algo
+        que se incremente el contador y se agrega la edad del nodo actual
+        que el ayudante me actualice pasándose al siguiente
+        que se calcule el promedio de edad dividiendo la edad entre el contador devolviéndome un valor tipo float
+     */
     public float averageAgePets() throws ListDEException {
         if (head != null) {
             NodeDE temp = head;
@@ -199,6 +273,24 @@ public class ListDE {
     }
 
     //Método que me permita decirle a una mascota determinada que adelante un número de posiciones dadas
+    /**
+    Si hay datos
+        si la posición es válida
+            si el primer nodo de la lista coincide con el código de la mascota que no se haga nada, ya
+            que el primer nodo coincide con el código de la mascota
+        si no
+            inicio un contador en 1 (que sea la cabeza)
+            llamo a un ayudante y que se posicione en la cabeza
+            que el ayudante tome el nodo siguiente y empiece a buscar el código de la mascota espeficidado
+            si se encuentra, que el ayudante se pase al siguiente o llegue al final y se incremente el contador
+            si el ayudante se pasó o llegó al final sin encontrar el código de la mascota
+            que se salga del método o retorne ya que no fue encontrado el código en la lista
+        llamo un segundo ayudante y le pongo los mismos datos que el siguiente nodo al nodo actual
+        que el segundo ayudante tome el nodo previo enlazando con el primer ayudante con el nodo normal
+        si la posición es mayor o igual a la posición del nuevo nodo de la lista
+            si es así, que se añada la mascota gracias al método previamente hecho para poder insertar en la
+            posición especificada
+     */
     public void passPetByPosition(String codePet, int positions) throws ListDEException{
         if (head != null){
             if(positions<size){
@@ -233,6 +325,27 @@ public class ListDE {
     }
 
     //Método que me permita decirle a una mascota determinada que pierda un numero de posiciones dadas
+    /**
+    Si hay datos
+        si la posición es válida
+            si el primer nodo coincide con el código de la mascota
+            que se cree un nuevo nodo con los datos que el siguiente nodo después del primer nodo
+            que se utilice la función de añadir por posición para insertar el nuevo nodo en la posición posterior
+            que se actualice el primer nodo al siguiente nodo
+            ahora que se establezca el nodo anterior del nuevo primer nodo como nulo
+     si no
+        inicializo un contador en 1 (que sea la cabeza)
+        llamo a un ayudante y que se posicione en la cabeza
+        mientras en el nodo sigueinte hayan datos, que busque el nodo con el código especificado previamente
+        luego que el ayudante se pase o llegue al final y que aumente el contador
+        si el ayudante llegó al final de la lista y no encontró el código a eliminar, que termine el método
+        si no
+            creo un nuevo ayudante con los mismos datos que el siguiente nodo después del nodo actual
+            que el ayudante agarre o actualice los enlaces de los nodos que van conectados al actual
+            si en el nodo siguiente hay datos
+                si lo hay que el ayudante establezca el nodo anterior del siguiente nodo como el nodo actual
+            que se actualice el método añadir por posición para insertar el nodo en la posición anterior
+     */
     public void afterwardsPetsPositions(String codePet, int positions) throws ListDEException {
         if (head != null) {
             if (positions < size) {
@@ -268,6 +381,15 @@ public class ListDE {
     }
 
     //Obtener un informe de mascotas por rango de edades
+    /**
+    llamo a un ayudante y que se posicione en la cabeza
+    inicializo un contador en cero
+        mientras hayan datos
+            que verifique si la edad del nodo actual está dentro del rango especificado
+            si dentro encuentra una edad dentro del rango, que se añada al contador
+            que el ayudante me actualice pasándose al siguiente
+    que me retorne el contador devolviéndome su valor final
+     */
     public int rangePetsByAge(int min, int max) throws ListDEException{
         if (head == null) {
             throw new ListDEException("La lista se encuentra vacía.");
@@ -284,6 +406,18 @@ public class ListDE {
     }
 
     //Implementar un método que me permita enviar al final de la lista a las mascotas que su nombre inicie con una letra dada
+    /**
+    Creo una lista copia temporal
+    llamo a un ayudante que se posicione en la cabeza
+    mientras hayan datos
+        que se compruebe si  el primer carácter del nombre del nodo actual es diferente a la letra initial mediante el método charAt
+        si es así, el nodo actual se agrega al final de la lista copia
+    que el ayudante se posicione en la cabeza
+    mientras hayan datos
+        que realice el paso similar al primer bucle, pero esta vez agrega todos los nodos que comienzan con la letra initial al final de la lista copia
+    que se posicione en la cabeza la copia
+     */
+
     public void petsByLetter(char initial) throws ListDEException{
 
         if (this.head == null) {
@@ -415,6 +549,9 @@ public class ListDE {
             }
         }
     }
+
+
+
 }
 
 
