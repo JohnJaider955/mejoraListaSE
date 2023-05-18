@@ -21,4 +21,6 @@ public class PetDTO {
     private char genderPet;
     @NotBlank(message = "Este campo requiere información.")
     private String codeLocationPet;
+
+    private boolean bath;
 }

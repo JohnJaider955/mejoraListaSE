@@ -35,8 +35,4 @@ public class ListSEService {
         kids.addToFinal(kid);
     }
 
-    public void changeExtremes() throws ListSEException{
-        kids.changesExtremes();
-    }
-
 }

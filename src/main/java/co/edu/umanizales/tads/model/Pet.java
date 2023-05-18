@@ -8,6 +8,7 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 public class Pet {
+
     @NotNull
     @NotBlank(message = "Este campo requiere información.")
     private String codePet;
@@ -24,4 +25,7 @@ public class Pet {
     private String namePet;
     @NotNull(message = "Este campo requiere información.")
     private LocationPets locationPets;
+
+    private boolean bath;
+
 }

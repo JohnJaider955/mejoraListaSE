@@ -546,6 +546,7 @@ public class ListDE {
         }
     }
 
+    //Para que me pueda imprimir más de dos elementos de la lista
     public List<Pet> print(){
         pets.clear();
         if(head != null){
@@ -557,6 +558,14 @@ public class ListDE {
         }
         return pets;
     }
+
+
+    /**
+     La implementación de los throw es con el objetivo de lograr capturar algún error y logre
+     finalizar correctamente los métodos, sin ser tan abrupto.
+     La idea, es mostrar  un error o una situación inusual que ocurre durante la ejecución de un programa.
+     y tome medidas adecuadas para manejar el error
+     */
 }
 
 

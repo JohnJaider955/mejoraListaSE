@@ -43,7 +43,7 @@ public class ListDEController {
         } try {
             listDEService.getPets().addPet(new Pet(petDTO.getIdentificationPet(),
                     petDTO.getGenderPet(), petDTO.getAgePet(),
-                    petDTO.getNamePet(), locationPets));
+                    petDTO.getNamePet(), locationPets,petDTO.isBath()));
         } catch (ListDEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     409, "Ya existe una mascota con ese código", null
