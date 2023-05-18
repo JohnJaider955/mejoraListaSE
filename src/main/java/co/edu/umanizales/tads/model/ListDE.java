@@ -1,16 +1,20 @@
 package co.edu.umanizales.tads.model;
 
-
-import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
 import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
 import co.edu.umanizales.tads.exception.ListDEException;
 import co.edu.umanizales.tads.exception.ListSEException;
 import lombok.Data;
 
+import java.util.List;
+
+import java.util.ArrayList;
+
 @Data
 public class ListDE {
     private NodeDE head;
     private int size;
+
+    private List<Pet> pets = new ArrayList<>();
 
     //Adicionar
     /**
@@ -550,8 +554,17 @@ public class ListDE {
         }
     }
 
-
-
+    public List<Pet> print(){
+        pets.clear();
+        if(head != null){
+            NodeDE temp = head;
+            while(temp != null){
+                pets.add(temp.getDataDE());
+                temp = temp.getNextDE();
+            }
+        }
+        return pets;
+    }
 }
 
 

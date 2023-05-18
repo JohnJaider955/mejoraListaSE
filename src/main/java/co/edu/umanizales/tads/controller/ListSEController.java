@@ -196,27 +196,28 @@ public class ListSEController {
     }
 
     //Método que me permita decirle a un niño determinado que adelante un numero de posiciones dadas
-    @GetMapping(path="/passpositions/{positions}")
-    public ResponseEntity<ResponseDTO> passByPosition(@PathVariable String identification, int positions) {
+    @GetMapping(path = "/passpositions/{identification}/{move}")
+    public ResponseEntity<ResponseDTO> passPosition(@PathVariable  String identification,  @PathVariable int move ) throws ListSEException {
         try {
-            listSEService.getKids().passByPosition(identification, positions);
-            return new ResponseEntity<>(new ResponseDTO(200, "El niño ha adelantado de posición", null), HttpStatus.OK);
+            listSEService.getKids().passPosition(identification,move, listSEService.getKids());
+            return new ResponseEntity<>(new ResponseDTO(200, "El niño se ha adelantado de posición", null), HttpStatus.OK);
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(500, "Ha ocurrido un error al adelantar la posición del niño", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
-    @GetMapping(path="/afterwardspositions")
-    public ResponseEntity<ResponseDTO> afterwardsPositions(@PathVariable String identification, int positions) throws ListSEException {
+    @GetMapping(path = "/lostposition/{identification}/{move}")
+    public ResponseEntity<ResponseDTO> LostPosition(@PathVariable  String identification,  @PathVariable int move ) throws ListSEException {
         try {
-            listSEService.getKids().afterwardsPositions(identification, positions);
-            return new ResponseEntity<>(new ResponseDTO(200, "El niño ha sido movido de posición", null), HttpStatus.OK);
+            listSEService.getKids().backPositions(identification,move);
+            return new ResponseEntity<>(new ResponseDTO(200, "El niño ha perdido posiciones", null), HttpStatus.OK);
         } catch (ListSEException e) {
             return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover al niño de posición",
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     //Obtener un informe de niños por rango de edades
     @GetMapping(path="/rangeagekids")
@@ -249,7 +250,7 @@ public class ListSEController {
     @GetMapping(path = "/change_extremes")
     public ResponseEntity<ResponseDTO> changeExtremes() {
         try {
-            listSEService.getKids().changesExtremes();
+            listSEService.changeExtremes();
             return new ResponseEntity<>(new ResponseDTO(
                     200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
         } catch (ListSEException e) {

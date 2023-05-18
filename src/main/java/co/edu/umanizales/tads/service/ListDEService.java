@@ -17,11 +17,10 @@ public class ListDEService {
     public void invertPets() throws ListDEException {
         pets.invertPets();
     }
-    /*
+
     public void deletePetByIdentification(String code) throws ListSEException {
         pets.deletePetByIdentification(code);
     }
-     */
 
     public void deleteByCode(String codePet){
         pets.deleteKamikazeByPosition(codePet);
