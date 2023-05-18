@@ -121,7 +121,7 @@ public class ListDEController {
             return new ResponseEntity<>(new ResponseDTO(
                     200, "Las mascotas con el código" + code + "han sido eliminados.",
                     null), HttpStatus.OK);
-        } catch (ListSEException e) {
+        } catch (ListDEException e) {
             return new ResponseEntity<>(new ResponseDTO(
                     500, "Error al eliminar las mascotas.",
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,15 +130,14 @@ public class ListDEController {
 
     //Obtener el promedio de edad de las mascotas de la lista
     @GetMapping(path="/averageagepets")
-    public ResponseEntity<ResponseDTO> averagePetAge() {
+    public ResponseEntity<ResponseDTO> averageAge(){
+        float averageAgePet;
         try {
-            listDEService.getPets().averageAgePets();
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha calculado el promedio de edad de las mascotas",
+            averageAgePet = listDEService.getPets().averageAgePets();
+            return new ResponseEntity<>(new ResponseDTO(200, "El promedio es de" + averageAgePet + " por edad.",
                     null), HttpStatus.OK);
         } catch (ListDEException e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    500, "Error al calcular la edad promedio.",
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al calcular la edad promedio.",
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -193,26 +192,26 @@ public class ListDEController {
                 200, reportPets,null),HttpStatus.OK);
     }
 
-    //Método que me permita decirle a una mascota determinada que adelante un numero de posiciones dadas
-    @GetMapping(path="/passpetspositions/{positions}")
-    public ResponseEntity<ResponseDTO> passByPosition(@PathVariable String identification, int positions) {
+    //Método que me permita decirle a una mascota determinada que adelante un número de posiciones dadas
+    @GetMapping(path = "/passpositions/{codepet}/{move}")
+    public ResponseEntity<ResponseDTO> passPetPosition(@PathVariable  String codepet,  @PathVariable int move ) {
         try {
-            listDEService.getPets().passPetByPosition(identification, positions);
+            listDEService.getPets().passPetPosition(codepet,move, listDEService.getPets());
             return new ResponseEntity<>(new ResponseDTO(200, "La mascota se ha adelantado de posición", null), HttpStatus.OK);
         } catch (ListDEException e) {
-            return new ResponseEntity<>(new ResponseDTO(500, "Ha ocurrido un error al adelantar la posición de la mascota",
-                    null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO(500, "Ha ocurrido un error al adelantar la posición de la mascota", null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    //Método que me permita decirle a una mascota determinada que pierda un numero de posiciones dadas
-    @GetMapping(path="/afterwardspetspositions/{positions}")
-    public ResponseEntity<ResponseDTO> afterwardsPositions(@PathVariable String identification, int positions) {
+    //Método que me permita decirle a una mascota determinada que pierda un número de posiciones dada
+    @GetMapping(path = "/lostposition/{codepet}/{move}")
+    public ResponseEntity<ResponseDTO> LostPetPosition(@PathVariable  String codepet,  @PathVariable int move )  {
         try {
-            listDEService.getPets().afterwardsPetsPositions(identification, positions);
-            return new ResponseEntity<>(new ResponseDTO(200, "La mascota ha sido movido de posición", null), HttpStatus.OK);
+            listDEService.getPets().backPetPositions(codepet,move);
+            return new ResponseEntity<>(new ResponseDTO(200, "La mascota ha perdido posiciones", null), HttpStatus.OK);
         } catch (ListDEException e) {
-            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover a la mascota de posición", null), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al intentar mover la mascota de posición",
+                    null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -264,6 +263,4 @@ public class ListDEController {
                     200, "Se ha eliminado",
                     null), HttpStatus.OK);
     }
-
-
 }

@@ -79,7 +79,7 @@ public class ListDE {
     }
 
     //Mascotas masculinas al inicio y femeninos al final.
-    /*
+    /**
     si hay datos
     sí
         creo una lista copia temporal
@@ -175,7 +175,7 @@ public class ListDE {
                 si el nodo es eliminado, que retorne o se salga del método
             que el ayudante tome el siguiente nodo (o se pase al final)
      */
-    public void deletePetByIdentification(String code) throws ListSEException {
+    public void deletePetByIdentification(String code) throws ListDEException {
         if (this.head != null) {
             if (this.head.getDataDE().getCodePet().equals(code)) {
                 this.head = this.head.getNextDE();
@@ -195,38 +195,44 @@ public class ListDE {
                     }
                     temp = temp.getNextDE();
                 }
-                throw new ListSEException("El código " + code + " no existe en la lista");
+                throw new ListDEException("El código " + code + " no existe en la lista");
             }
         }
         else {
-            throw new ListSEException("No hay datos en la lista");
+            throw new ListDEException("No hay datos en la lista");
         }
     }
 
     //Obtener el promedio de edad de las mascotas de la lista
     /**
-    si hay datos
-        llamo a un ayudante y que se posicione en la cabeza
-        se inicializa las variables contador y age en 0 para añadir las cantidades (num de nodos y suma de edades)
-        mientras en el nodo exista algo
-        que se incremente el contador y se agrega la edad del nodo actual
-        que el ayudante me actualice pasándose al siguiente
-        que se calcule el promedio de edad dividiendo la edad entre el contador devolviéndome un valor tipo float
+     creo un ayudante y que se posicione en la cabeza
+     inicializo un contador en cero al igual que la edad (irán aumentando)
+     mientras hayan datos o no sea null
+     que aumente el contador
+     ahora que se sume la edad de los niños con el promedio a calcular
+     que el ayudante tome el siguiente nodo (o se pase al final)
+     se declara una variable que contendría la suma de las edades
+     si el contador fue mayor a 0
+     que se divida la edad por lo obtenido en el contador (la cantidad de mascotas)
+     que me retorne el promedio ya calculado.
      */
     public float averageAgePets() throws ListDEException {
-        if (head != null) {
-            NodeDE temp = head;
-            int contador = 0;
-            int ages = 0;
-            while (temp.getNextDE() != null) {
-                contador++;
-                ages = ages + temp.getDataDE().getAgePet();
-                temp = temp.getNextDE();
-            }
-            return (float) ages / contador;
-        } else {
-            throw new ListDEException("La lista está vacía");
+        if (head == null) {
+            throw new ListDEException("La lista está vacía. No se puede calcular el promedio de edades.");
         }
+        NodeDE temp = head;
+        int count = 0;
+        int ages = 0;
+        while(temp != null) {
+            count++;
+            ages = ages + temp.getDataDE().getAgePet();
+            temp = temp.getNextDE();
+        }
+        float average = 0;
+        if (count > 0) {
+            average = ages / (float)count;
+        }
+        return average;
     }
 
     //Generar un reporte que me diga cuantas mascotas hay de cada ciudad.
@@ -278,109 +284,75 @@ public class ListDE {
 
     //Método que me permita decirle a una mascota determinada que adelante un número de posiciones dadas
     /**
-    Si hay datos
-        si la posición es válida
-            si el primer nodo de la lista coincide con el código de la mascota que no se haga nada, ya
-            que el primer nodo coincide con el código de la mascota
-        si no
-            inicio un contador en 1 (que sea la cabeza)
-            llamo a un ayudante y que se posicione en la cabeza
-            que el ayudante tome el nodo siguiente y empiece a buscar el código de la mascota espeficidado
-            si se encuentra, que el ayudante se pase al siguiente o llegue al final y se incremente el contador
-            si el ayudante se pasó o llegó al final sin encontrar el código de la mascota
-            que se salga del método o retorne ya que no fue encontrado el código en la lista
-        llamo un segundo ayudante y le pongo los mismos datos que el siguiente nodo al nodo actual
-        que el segundo ayudante tome el nodo previo enlazando con el primer ayudante con el nodo normal
-        si la posición es mayor o igual a la posición del nuevo nodo de la lista
-            si es así, que se añada la mascota gracias al método previamente hecho para poder insertar en la
-            posición especificada
+     llamo a un ayudante y que se posicione en la cabeza
+     inicializo un contador en 1 (teniendo en cuenta que la lista tenga alguien en la posición)
+     mientras en la cabeza hayan datos y que verifique si la identificación que se dio previamente no es igual a la
+     identificación específica proporcionada
+     si las identificaciones no son iguales, que continúe buscando.
+     si ambas condiciones se cumplen, significa que el nodo donde está parado el ayudante no es nulo y su
+     identificación no coincide con la edad buscada, entonces que el ayudante se pase al siguiente nodo y que
+     se incremente el contador
+     si en el nodo siguiente donde está parado ahora el ayudante hay datos
+     se calcula la diferencia entre la posición actual del nodo y la posición a la que se quiere mover
+     se obtiene una variable del niño donde salió del nodo actual obteniendo sus datos
+     ahora que se elimine el nodo actual de la lista gracias a su identificación
+     si la diferencia calculada es mayor a 0, que se agregue el niño en la posición del resultado de
+     calcular la posición actual del nodo y la posición de la lista
+     si no
+     si la diferencia es menor a 0, que se agregue el niño al inicio de la lista.
      */
-    public void passPetByPosition(String codePet, int positions) throws ListDEException{
-        if (head != null){
-            if(positions<size){
-                if(head.getDataDE().getCodePet()==codePet){
-
-                }
-                else{
-                    int count = 1;
-                    NodeDE temp = head;
-                    while(temp.getNextDE().getDataDE().getCodePet()!=codePet){
-                        temp = temp.getNextDE();
-                        count++;
-                        if(temp.getNextDE()!=null){
-                            return;
-                        }
-                    }
-                    NodeDE temp2 = new NodeDE(temp.getNextDE().getDataDE());
-                    temp2.setPrevious(temp);
-                    temp.setNextDE(temp2);
-                    if(positions >= count+1){
-                        addPetByPosition(temp2.getDataDE(), positions);
-                    }
-                }
-            }
-            else{
-                throw new ListDEException("La posición ingresada es mayor o igual al tamaño de la lista.");
-            }
+    public void passPetPosition(String codePet, int position, ListDE listDE) throws ListDEException{
+        NodeDE temp = this.head;
+        int count = 1;
+        while (temp != null && !temp.getDataDE().getCodePet().equals(codePet)) {
+            temp = temp.getNextDE();
+            count++;
         }
-        else{
-            throw new ListDEException("La lista se encuentra vacía.");
+        if (temp != null) {
+            int difference = count - position;
+            Pet pet = temp.getDataDE();
+            listDE.deletePetByIdentification(temp.getDataDE().getCodePet());
+            if (difference > 0) {
+                listDE.addPetInPosition(difference, pet);
+            } else {
+                listDE.addPetsToStart(pet);
+            }
+        } else {
+            throw new ListDEException("No se encontró ningún niño con la identificación especificada.");
         }
     }
 
+
     //Método que me permita decirle a una mascota determinada que pierda un numero de posiciones dadas
     /**
-    Si hay datos
-        si la posición es válida
-            si el primer nodo coincide con el código de la mascota
-            que se cree un nuevo nodo con los datos que el siguiente nodo después del primer nodo
-            que se utilice la función de añadir por posición para insertar el nuevo nodo en la posición posterior
-            que se actualice el primer nodo al siguiente nodo
-            ahora que se establezca el nodo anterior del nuevo primer nodo como nulo
-     si no
-        inicializo un contador en 1 (que sea la cabeza)
-        llamo a un ayudante y que se posicione en la cabeza
-        mientras en el nodo sigueinte hayan datos, que busque el nodo con el código especificado previamente
-        luego que el ayudante se pase o llegue al final y que aumente el contador
-        si el ayudante llegó al final de la lista y no encontró el código a eliminar, que termine el método
-        si no
-            creo un nuevo ayudante con los mismos datos que el siguiente nodo después del nodo actual
-            que el ayudante agarre o actualice los enlaces de los nodos que van conectados al actual
-            si en el nodo siguiente hay datos
-                si lo hay que el ayudante establezca el nodo anterior del siguiente nodo como el nodo actual
-            que se actualice el método añadir por posición para insertar el nodo en la posición anterior
+     llamo a un ayudante y le digo que se posicione en la cabeza
+     inicializo un contador en 1 (teniendo en cuenta que la lista tenga alguien en la posición)
+     mientras en la cabeza hayan datos y que verifique si la identificación que se dio previamente no es igual a la
+     identificación específica proporcionada
+     si las identificaciones no son iguales, que continúe buscando.
+     si ambas condiciones se cumplen, significa que el nodo donde está parado el ayudante no es nulo y su
+     identificación no coincide con la edad buscada, entonces que el ayudante se pase al siguiente nodo y que
+     se incremente el contador
+     se calcula la suma de la posición actual del nodo encontrado y la posición a retroceder
+     si en el nodo siguiente donde está parado ahora el ayudante hay datos
+     se obtiene una variable del niño donde salió del nodo actual obteniendo sus datos
+     que se elimine el nodo actual de la lista por su identificación
+     que se agregue el niño en la posición que da el total de la suma en la lista.
      */
-    public void afterwardsPetsPositions(String codePet, int positions) throws ListDEException {
-        if (head != null) {
-            if (positions < size) {
-                if (head.getDataDE().getCodePet() == codePet) {
-                    NodeDE node = new NodeDE(head.getNextDE().getDataDE());
-                    addPetByPosition(node.getDataDE(),positions + 1 );
-                    head = head.getNextDE();
-                    head.setPrevious(null);
-                } else {
-                    int count = 1;
-                    NodeDE temp = head;
-                    while (temp.getNextDE() != null && temp.getNextDE().getDataDE().getCodePet() != codePet) {
-                        temp = temp.getNextDE();
-                        count++;
-                    }
-                    if (temp.getNextDE() == null) {
-                        throw new ListDEException("No se encontró un nodo con la identificación proporcionada.");
-                    } else {
-                        NodeDE temp2 = new NodeDE(temp.getNextDE().getDataDE());
-                        temp.setNextDE(temp.getNextDE().getNextDE());
-                        if (temp.getNextDE() != null) {
-                            temp.getNextDE().setPrevious(temp);
-                        }
-                        addPetByPosition(temp2.getDataDE(), count + 1 + positions);
-                    }
-                }
-            } else {
-                throw new ListDEException("La posición proporcionada excede el tamaño de la lista");
-            }
+    public void backPetPositions(String codePet, int position) throws ListDEException {
+        NodeDE temp = this.head;
+        int count = 1;
+        while (temp != null && !temp.getDataDE().getCodePet().equals(codePet)) {
+            temp = temp.getNextDE();
+            count++;
+        }
+        int sum = position + count;
+        if (temp != null) {
+            Pet pet = temp.getDataDE();
+            deletePetByIdentification(temp.getDataDE().getCodePet());
+            addPetInPosition(sum, pet);
         } else {
-            throw new ListDEException("La lista se encuentra vacía.");
+            throw new ListDEException("No se encontró ningún niño con la identificación especificada.");
         }
     }
 
@@ -421,7 +393,6 @@ public class ListDE {
         que realice el paso similar al primer bucle, pero esta vez agrega todos los nodos que comienzan con la letra initial al final de la lista copia
     que se posicione en la cabeza la copia
      */
-
     public void petsByLetter(char initial) throws ListDEException{
 
         if (this.head == null) {
@@ -448,32 +419,6 @@ public class ListDE {
         }
 
         this.head = listCP.getHead();
-    }
-
-    public void addPetByPosition(Pet pet, int position) throws ListDEException{
-        if (position < 0 || position > size) {
-            throw new ListDEException("Posición inválida");
-        }
-        NodeDE newNode = new NodeDE(pet);
-        if (position == 0){
-            newNode.setNextDE(head);
-            if (head != null){
-                head.setPrevious(newNode);
-            }
-            head = newNode;
-        } else {
-            NodeDE temp = head;
-            for (int i = 0; i < position - 1; i++){
-                temp = temp.getNextDE();
-            }
-            newNode.setNextDE(temp.getNextDE());
-            if (temp.getNextDE()!=null){
-                temp.getNextDE().setPrevious(newNode);
-            }
-            temp.setNextDE(newNode);
-            newNode.setPrevious(temp);
-        }
-        size++;
     }
 
     public void addPetsToStart(Pet pet) {
@@ -549,6 +494,53 @@ public class ListDE {
                         return;
                     }
                     temp = temp.getNextDE();
+                }
+            }
+        }
+    }
+
+    /**
+    Si en la cabeza hay datos o no está vacía la lista
+        si la posición es la primera (1)
+        si es la primera, que se llame el método añadir al inicio y se inserte la mascota
+     si no
+        llamo a un ayudante y que se posicione en la cabeza
+        inicializo un contador en 1
+        mientras hayan datos y que el contador es menor que el valor de la posición -1
+        que se ejecute hasta llegar a la posición anterior deseada
+        que el ayudante tome el siguiente nodo
+        que el contador se incremente
+     si siguen habiendo datos en el siguiente nodo donde está el ayudante
+        que se cree un nuevo nodo y metemos a la mascota ahí
+        que se establezca el enlace del nuevo nodo al siguiente nodo después de la posición deseada (allí se parará el ayudante)
+        ahora que se establezca referencia del nodo anterior para el nuevo nodo
+        si en el siguiente nodo hay algo
+            que se actualice el nodo donde está el ayudante con el enlace previo
+        que se actualice las referencias del nodo actual y el nuevo nodo
+     */
+    public void addPetInPosition(int position, Pet pet) throws ListDEException {
+        if (size < position) {
+            throw new ListDEException("Se ingresó una posición más grande que la lista.");
+        }
+
+        if (head != null) {
+            if (position == 1) {
+                addPetsToStart(pet);
+            } else {
+                NodeDE temp = head;
+                int count = 1;
+                while (temp != null && count < position - 1) {
+                    temp = temp.getNextDE();
+                    count++;
+                }
+                if (temp != null) {
+                    NodeDE newNode = new NodeDE(pet);
+                    newNode.setNextDE(temp.getNextDE());
+                    newNode.setPrevious(temp);
+                    if (temp.getNextDE() != null) {
+                        temp.getNextDE().setPrevious(newNode);
+                    }
+                    temp.setNextDE(newNode);
                 }
             }
         }

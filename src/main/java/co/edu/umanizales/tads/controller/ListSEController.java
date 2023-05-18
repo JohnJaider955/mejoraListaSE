@@ -131,16 +131,16 @@ public class ListSEController {
     }
 
     //Obtener el promedio de edad de los niños de la lista
+
     @GetMapping(path="/averageage")
-    public ResponseEntity<ResponseDTO> averageAge() {
+    public ResponseEntity<ResponseDTO> averageAge(){
+        float averageAge;
         try {
-            listSEService.getKids().averageAge();
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha calculado el promedio de edad",
+            averageAge = listSEService.getKids().averageAge();
+            return new ResponseEntity<>(new ResponseDTO(200, "El promedio es de" + averageAge + " por edad.",
                     null), HttpStatus.OK);
         } catch (ListSEException e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    500, "Error al calcular la edad promedio.",
+            return new ResponseEntity<>(new ResponseDTO(500, "Error al calcular la edad promedio.",
                     null), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -197,7 +197,7 @@ public class ListSEController {
 
     //Método que me permita decirle a un niño determinado que adelante un numero de posiciones dadas
     @GetMapping(path = "/passpositions/{identification}/{move}")
-    public ResponseEntity<ResponseDTO> passPosition(@PathVariable  String identification,  @PathVariable int move ) throws ListSEException {
+    public ResponseEntity<ResponseDTO> passPosition(@PathVariable  String identification,  @PathVariable int move ) {
         try {
             listSEService.getKids().passPosition(identification,move, listSEService.getKids());
             return new ResponseEntity<>(new ResponseDTO(200, "El niño se ha adelantado de posición", null), HttpStatus.OK);

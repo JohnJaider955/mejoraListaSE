@@ -205,29 +205,34 @@ public class ListSE {
     /**
     -Ejercicio 5: Obtener el promedio de edad de los niños de la lista
     Explicación:
-    si hay datos
-        llamo a un ayudante y que se posicione en la cabeza
-        se inicializa las variables contador y age en 0 para añadir las cantidades (num de nodos y suma de edades)
-        mientras en el nodo exista algo
-        que se incremente el contador y se agrega la edad del nodo actual
-        que el ayudante me actualice pasándose al siguiente
-        que se calcule el promedio de edad dividiendo la edad entre el contador devolviéndome un valor tipo float
+    creo un ayudante y que se posicione en la cabeza
+     inicializo un contador en cero al igual que la edad (irán aumentando)
+     mientras hayan datos o no sea null
+        que aumente el contador
+        ahora que se sume la edad de los niños con el promedio a calcular
+        que el ayudante tome el siguiente nodo (o se pase al final)
+        se declara una variable que contendría la suma de las edades
+        si el contador fue mayor a 0
+            que se divida la edad por lo obtenido en el contador (la cantidad de niños)
+        que me retorne el promedio ya calculado.
      */
     public float averageAge() throws ListSEException {
-        if (head != null){
-            Node temp = head;
-            int count = 0;
-            int ages = 0;
-            while(temp.getNext() != null) {
-                count++;
-                ages = ages + temp.getData().getAge();
-                temp = temp.getNext();
-            }
-            return (float) ages/count;
+        if (head == null) {
+            throw new ListSEException("La lista está vacía. No se puede calcular el promedio de edades.");
         }
-        else{
-            throw new ListSEException("La lista está vacía");
+        Node temp = head;
+        int count = 0;
+        int ages = 0;
+        while(temp != null) {
+            count++;
+            ages = ages + temp.getData().getAge();
+            temp = temp.getNext();
         }
+        float average = 0;
+        if (count > 0) {
+            average = ages / (float)count;
+        }
+        return average;
     }
 
     /**
@@ -304,7 +309,6 @@ public class ListSE {
         si no
             si la diferencia es menor a 0, que se agregue el niño al inicio de la lista.
      */
-
     public void passPosition(String identification, int position, ListSE listSE) throws ListSEException {
         Node temp = this.head;
         int count = 1;
@@ -362,7 +366,6 @@ public class ListSE {
             throw new ListSEException("No se encontró ningún niño con la identificación especificada.");
         }
     }
-
 
     /**
     -Ejercicio 9: Obtener un informe de niños por rango de edades
@@ -429,26 +432,26 @@ public class ListSE {
         this.head = listCP.getHead();
     }
 
-    /*
-    public void addByPosition(Kid kid, int position){
-        Node newNode = new Node(kid);
-        if (position == 0){
-            newNode.setNext(head);
-            head = newNode;
-        } else {
-            Node temp = head;
-            for (int i = 0; i < position - 1; i++){
-                temp = temp.getNext();
-            }
-            newNode.setNext(temp.getNext());
-            temp.setNext(newNode);
-        }
-        size++;
-    }
+    /**
+    -Método añadir por posición
+     Explicación:
+     Si hay datos en la cabeza o no está vacía la lista
+        si la posición es la primera (1)
+        si es la primera, que se llame el método añadir al inicio y se inserte el niño
+     si no
+        llamo a un ayudante y que se posicione en la cabeza
+        inicializo un contador en 1
+        mientras hayan datos y que el contador es menor que el valor de la posición -1
+        que se ejecute hasta llegar a la posición anterior deseada
+        que el ayudante tome el siguiente nodo
+        que el contador se incremente
+     si siguen habiendo datos en el siguiente nodo donde está el ayudante
+        que se cree un nuevo nodo y metemos al niño ahí
+        que se establezca el enlace del nuevo nodo al siguiente nodo después de la posición deseada (allí se parará el ayudante)
+        que el ayudante se establezca en enlace del nodo anterior a la posición deseada al nuevo nodo
      */
     public void addInPosition(int position, Kid kid) throws ListSEException {
-
-        if (size<position) throw  new ListSEException("Ingreso uno posición mas grande que la lista  ");
+        if (size<position) throw  new ListSEException("Se ingresó una posición mas grande que la lista.");
 
         if (head!=null) {
             if (position == 1) {
@@ -458,14 +461,7 @@ public class ListSE {
                 int cont =1;
                 while (temp != null && cont<position-1)
                 {
-                    if(temp.getData().getIdentification().equals(kid.getIdentification())){
-                        throw new ListSEException("ERROR: El niño con identificación " + kid.getIdentification() +  " ya ha sido agregado.");
-                    }
-                    if(temp.getData().getName().equals(kid.getName()) && temp.getData().getLocation().equals(kid.getLocation())){
-                        throw new ListSEException("ERROR: El niño con el nombre " + kid.getName() + " y la locación "  + kid.getLocation().getName() +  " ya ha sido agregado.");
-                    }
                     temp = temp.getNext();
-
                     cont++;
                 }
                 if (temp != null) {
@@ -476,11 +472,12 @@ public class ListSE {
                 }
             }
         }
-
     }
 
     /**
-    si hay datos en la cabeza y si en el siguiente nodo también hay datos
+    -Método de intercambiar extremos
+     Explicación:
+     si hay datos en la cabeza y si en el siguiente nodo también hay datos
     si
         llamo a un ayudante y le digo que se posicione en la cabeza
         que el ayudante recorra la lista hasta que llegue al último (mientras hayan datos)
@@ -549,6 +546,19 @@ public class ListSE {
         temp.setNext(newNode);
     }
 
+    /**
+    -Método de eliminar niños por identificación
+     Explicación
+        si en la cabeza hay datos o no esté vacía la lista
+          si el elemento a eliminar se encuentra en la cabeza de la lista (en este caso la identificación)
+            que elimine la cabeza moviendo el enlace al siguiente nodo
+        si no
+            llamo a un ayudante y que se posicione en la cabeza
+            mientras en el enlace siguiente exista algo
+                verificar si el siguiente nodo contiene el elemento a eliminar
+                si se encontró, que se elimine el siguiente nodo con su identificación
+            que el ayudante tome el siguiente nodo (o se pase al final)
+     */
     public void deleteKidByIdentification(String identification) {
         if (this.head != null) {
             if (this.head.getData().getIdentification().equals(identification)) {

@@ -35,7 +35,7 @@ public class ListDC {
         size++;
     }
 
-    public void addLedsToStart(Pet pet) {
+    public void addPetsToStart(Pet pet) {
         NodeDE newNodeDE = new NodeDE(pet);
         if (head == null) {
             newNodeDE.setNextDE(newNodeDE);
