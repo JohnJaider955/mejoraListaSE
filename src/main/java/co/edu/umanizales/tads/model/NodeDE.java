@@ -10,7 +10,6 @@ public class NodeDE {
     private NodeDE nextDE;
 
     private NodeDE previous;
-
     public NodeDE(Pet data) {
         this.dataDE = data;
     }

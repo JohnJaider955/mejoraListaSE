@@ -132,5 +132,14 @@ public class ListDCController {
         }
     }
 
+    @GetMapping(path="/petsintercalatecircular")
+    public ResponseEntity<ResponseDTO> petMaleIntercalateFemaleCircular() {
+        try {
+            listDCService.getPetsDECircular().intercalatePetsGenderCircular();
+            return new ResponseEntity<>(new ResponseDTO(200, "Las mascotas se han intercalado.", null), HttpStatus.OK);
+        } catch (ListDEException e) {
+            return new ResponseEntity<>(new ResponseDTO(500, "Ocurrió un error al intercalar el género de las mascotas", null), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

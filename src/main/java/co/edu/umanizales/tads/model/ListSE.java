@@ -486,13 +486,14 @@ public class ListSE {
             que se reemplace la cabeza con el objeto de datos del último nodo (el primero niño ahora es último)
             que se reemplace el último nodo (el último ahora es el primero)
      */
-    public void changesExtremes() throws ListSEException{
-        if (this.head != null && this.head.getNext() != null) {
+    public void changeExtremes() throws ListSEException{
+        if(this.head !=null && this.head.getNext() !=null)
+        {
             Node temp = this.head;
-            while (temp.getNext() != null) {
+            while(temp.getNext()!=null)
+            {
                 temp = temp.getNext();
             }
-
             Kid copy = this.head.getData();
             this.head.setData(temp.getData());
             temp.setData(copy);
@@ -501,6 +502,7 @@ public class ListSE {
         {
             throw  new ListSEException("No es posible cambiar de extremos.");
         }
+
     }
 
     /* Adicionar al inicio

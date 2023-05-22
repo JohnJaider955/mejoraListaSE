@@ -250,7 +250,7 @@ public class ListSEController {
     @GetMapping(path = "/change_extremes")
     public ResponseEntity<ResponseDTO> changeExtremes() {
         try {
-            listSEService.getKids().changesExtremes();
+            listSEService.getKids().changeExtremes();
             return new ResponseEntity<>(new ResponseDTO(
                     200, "Se ha intercambiado los extremos ", null), HttpStatus.OK);
         } catch (ListSEException e) {

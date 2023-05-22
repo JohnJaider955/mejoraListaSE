@@ -19,7 +19,7 @@ public class ListDC {
       llamo a un ayudante y que se posicione en la cabeza
       si en el siguiente hay algo diferente a la cabeza
       que el ayudante se pase al siguiente nodo
-      que se cree un nuevo nodo con el objeto led que se proporcionó previamente
+      que se cree un nuevo nodo con la mascota que se proporcionó previamente
       que el ayudante se pase al nodo siguiente y se establezca como nuevo nodo
       que se establezca el nodo anterior del nuevo nodo con el ayudante
       ahora que se establezca el nuevo nodo de la mascota como la cabeza de la lista
@@ -218,6 +218,59 @@ public class ListDC {
         }
     }
 
+    /**
+    -Intercalar mascotas de a 2
+     Se crean dos nuevas listas enlazadas para separar los nodos de la lista original según el género
+     llamo un ayudante y que se posicione en la cabeza original
+     mientras en la cabeza hayan datos o en la lista de machos y hembras no tengan elementos
+        que me verifique el género de la mascota actual si es masculina o femenina
+        en caso que sea macho, que se agregue a la lista, al igual que si es hembra
+        que el ayudante se pase al siguiente nodo de la lista original
+     que se cree una nueva lista para almacenar las mascotas intercaladas
+     necesito obtener referencias de los nodos iniciales de mascotas macho y hembra
+     ahora, mientras alguno de los nodos macho y hembra hayan datos
+        en caso que sea macho en la lista intercalada que se agregue a la nueva lista utilizando el método de añadir
+        ahora que avance al siguiente nodo de la lista de las mascotas macho
+        lo mismo si es hembra, que se agregue a la nueva lista y que avance al siguiente de las mascotas hembra
+     que se actualice la cabeza de la lista original con el nodo de la lista intercalada
+     */
+    public void intercalatePetsGenderCircular() throws ListDEException {
+        ListDE listPetMale = new ListDE();
+        ListDE listPetFemale = new ListDE();
+        NodeDE temp = this.head;
+
+        if (temp == null) {
+            throw new ListDEException("La lista está vacía");
+        }
+
+        while (temp != this.head || listPetMale.getHead() == null || listPetFemale.getHead() == null) {
+            if (temp.getDataDE().getGenderPet() == 'M') {
+                listPetMale.addPet(temp.getDataDE());
+            } else if (temp.getDataDE().getGenderPet() == 'F') {
+                listPetFemale.addPet(temp.getDataDE());
+            }
+            temp = temp.getNextDE();
+        }
+
+        ListDE newListPetsFemale = new ListDE();
+        NodeDE petMaleNode = listPetMale.getHead();
+        NodeDE petFemaleNode = listPetFemale.getHead();
+
+        while (petMaleNode != null || petFemaleNode != null) {
+            if (petMaleNode != null) {
+                newListPetsFemale.addPet(petMaleNode.getDataDE());
+                petMaleNode = petMaleNode.getNextDE();
+            }
+            if (petFemaleNode != null) {
+                newListPetsFemale.addPet(petFemaleNode.getDataDE());
+                petFemaleNode = petFemaleNode.getNextDE();
+            }
+        }
+
+        this.head = newListPetsFemale.getHead();
+    }
+
+
     //Para que me pueda imprimir más de dos elementos de la lista
     public List<Pet> print() {
         List<Pet> pets = new ArrayList<>();
@@ -231,12 +284,11 @@ public class ListDC {
         return pets;
     }
 
-
-        /**
-         La implementación de los throw es con el objetivo de lograr capturar algún error y logre
-         finalizar correctamente los métodos, sin ser tan abrupto.
-         La idea, es mostrar un error o una situación inusual que ocurre durante la ejecución de un programa.
-         y tome medidas adecuadas para manejar el error
-         */
+    /**
+     La implementación de los throw es con el objetivo de lograr capturar algún error y logre
+     finalizar correctamente los métodos, sin ser tan abrupto.
+     La idea, es mostrar un error o una situación inusual que ocurre durante la ejecución de un programa.
+     y tome medidas adecuadas para manejar el error
+     */
 }
 

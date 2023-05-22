@@ -15,10 +15,6 @@ public class ListSEService {
         kids = new ListSE();
     }
 
-    public void KidsDataService() {
-        kids = new ListSE();
-    }
-
     public void deleteByAge(byte age) throws ListSEException {
         kids.deleteByAge(age);
     }
@@ -31,8 +27,5 @@ public class ListSEService {
         kids.addToStart(kid);
     }
 
-    public void addToFinal(Kid kid){
-        kids.addToFinal(kid);
-    }
 
 }

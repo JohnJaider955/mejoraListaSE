@@ -439,7 +439,6 @@ public class ListDE {
             while (temp.getNextDE() != null) {
                 temp = temp.getNextDE();
             }
-
             Pet copy = this.head.getDataDE();
             this.head.setDataDE(temp.getDataDE());
             temp.setDataDE(copy);
